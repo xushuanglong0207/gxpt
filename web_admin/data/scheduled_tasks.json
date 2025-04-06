@@ -1,0 +1,15 @@
+{
+  "task_1740885610": {
+    "id": "task_1740885610",
+    "name": "播放视频",
+    "command": "21321",
+    "schedule_type": "daily",
+    "schedule_value": "08:30",
+    "description": "2131",
+    "created_at": "2025-03-02 11:20:10",
+    "last_run": "2025-03-10 08:30:00",
+    "enabled": true,
+    "notify": false,
+    "notify_config": {}
+  }
+}

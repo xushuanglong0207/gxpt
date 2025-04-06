@@ -1,0 +1,15 @@
+{
+  "task_1740851280": {
+    "id": "task_1740851280",
+    "name": "SZHZFTTH113524605",
+    "command": "python3 app.py",
+    "schedule_type": "daily",
+    "schedule_value": "08:30",
+    "description": "12",
+    "created_at": "2025-03-02 01:48:00",
+    "last_run": "2025-03-02 08:30:00",
+    "enabled": true,
+    "notify": false,
+    "notify_config": {}
+  }
+}

@@ -1,0 +1,379 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <!-- 预加载字体资源，避免慢资源警告 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&display=swap" as="style">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&display=swap">
+    
+    <!-- 预加载关键资源 -->
+    <link rel="dns-prefetch" href="https://cdn.bootcdn.net">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}" defer></script>
+    
+    <!-- 使用本地资源，如果本地资源加载失败则使用CDN -->
+    {% if config.get('SITE_FAVICON') %}
+    <link rel="icon" href="{{ url_for('static', filename=config.get('SITE_FAVICON')) }}?v={{ now }}" type="image/x-icon">
+    {% else %}
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.svg') }}" type="image/svg+xml">
+    {% endif %}
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" 
+          onerror="this.onerror=null;this.href='https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css';">
+    <link href="{{ url_for('static', filename='css/font-awesome.min.css') }}" rel="stylesheet" 
+          onerror="this.onerror=null;this.href='https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/css/all.min.css';">
+    
+    <!-- 自定义样式 -->
+    <style>
+        /* 内联关键CSS，提高首屏加载速度 */
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: #343a40;
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        /* 添加页面过渡动画 */
+        .fade-enter {
+            opacity: 0;
+        }
+        .fade-enter-active {
+            opacity: 1;
+            transition: opacity 200ms ease-in;
+        }
+    </style>
+    
+    <!-- 延迟加载非关键CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" media="print" onload="this.media='all'">
+    
+    <!-- 自定义CSS样式 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}?v={{ now }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-fix.css') }}?v={{ now }}">
+    
+    <!-- 下拉菜单修复CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dropdown-fix.css') }}?v={{ now }}">
+    
+    <!-- 引入 Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- 引入 Toastr CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/toastr.min.css') }}">
+    
+    {% block styles %}{% endblock %}
+    
+    <!-- Service Worker注册 -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register("{{ url_for('static', filename='js/sw.js') }}")
+                    .then(function(registration) {
+                        console.log('ServiceWorker注册成功:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker注册失败:', error);
+                    });
+            });
+        }
+        
+        // 本地存储管理
+        const localStorageManager = {
+            // 存储资源到本地
+            storeResource: function(key, content, contentType) {
+                try {
+                    const resource = {
+                        content: content,
+                        contentType: contentType,
+                        timestamp: Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(resource));
+                    return true;
+                } catch (error) {
+                    console.error('存储资源失败:', error);
+                    return false;
+                }
+            },
+            
+            // 获取本地存储的资源
+            getResource: function(key) {
+                try {
+                    const resourceJson = localStorage.getItem(key);
+                    if (!resourceJson) return null;
+                    
+                    const resource = JSON.parse(resourceJson);
+                    
+                    // 检查资源是否过期（7天）
+                    if (Date.now() - resource.timestamp > 7 * 24 * 60 * 60 * 1000) {
+                        localStorage.removeItem(key);
+                        return null;
+                    }
+                    
+                    return resource;
+                } catch (error) {
+                    console.error('获取资源失败:', error);
+                    return null;
+                }
+            },
+            
+            // 从URL加载资源并存储到本地
+            loadAndStoreResource: function(url, key, contentType) {
+                return fetch(url)
+                    .then(response => response.text())
+                    .then(content => {
+                        this.storeResource(key, content, contentType);
+                        return content;
+                    })
+                    .catch(error => {
+                        console.error('加载资源失败:', error);
+                        throw error;
+                    });
+            }
+        };
+        
+        // 处理脚本加载
+        function loadScript(url, id) {
+            const resourceKey = 'script_' + (id || url);
+            const cachedScript = localStorageManager.getResource(resourceKey);
+            
+            if (cachedScript) {
+                // 使用缓存的脚本
+                console.log('使用本地缓存脚本:', resourceKey);
+                const scriptElement = document.createElement('script');
+                scriptElement.textContent = cachedScript.content;
+                document.head.appendChild(scriptElement);
+                return Promise.resolve();
+            } else {
+                // 从服务器加载
+                return localStorageManager.loadAndStoreResource(url, resourceKey, 'application/javascript')
+                    .then(content => {
+                        const scriptElement = document.createElement('script');
+                        scriptElement.textContent = content;
+                        document.head.appendChild(scriptElement);
+                    })
+                    .catch(() => {
+                        // 加载失败时，创建普通script标签
+                        const scriptElement = document.createElement('script');
+                        scriptElement.src = url;
+                        document.head.appendChild(scriptElement);
+                    });
+            }
+        }
+        
+        // 处理样式加载
+        function loadStyle(url, id) {
+            const resourceKey = 'style_' + (id || url);
+            const cachedStyle = localStorageManager.getResource(resourceKey);
+            
+            if (cachedStyle) {
+                // 使用缓存的样式
+                console.log('使用本地缓存样式:', resourceKey);
+                const styleElement = document.createElement('style');
+                styleElement.textContent = cachedStyle.content;
+                document.head.appendChild(styleElement);
+                return Promise.resolve();
+            } else {
+                // 从服务器加载
+                return localStorageManager.loadAndStoreResource(url, resourceKey, 'text/css')
+                    .then(content => {
+                        const styleElement = document.createElement('style');
+                        styleElement.textContent = content;
+                        document.head.appendChild(styleElement);
+                    })
+                    .catch(() => {
+                        // 加载失败时，创建普通link标签
+                        const linkElement = document.createElement('link');
+                        linkElement.rel = 'stylesheet';
+                        linkElement.href = url;
+                        document.head.appendChild(linkElement);
+                    });
+            }
+        }
+    </script>
+    
+    <!-- 网站标题和favicon -->
+    <title>{% block title %}{{ config.get('SITE_TITLE', '高效测试平台') }}{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/custom_favicon_1743786570.png') }}?v={{ now }}">
+</head>
+<body>
+    <!-- 头部导航栏 -->
+    <header class="topbar" data-navbarbg="skin5">
+        <nav class="navbar top-navbar navbar-expand-md navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url_for('index') }}">
+                    {% if config.get('SITE_FAVICON') %}
+                    <img src="{{ url_for('static', filename=config.get('SITE_FAVICON')) }}?v={{ now }}" alt="网站图标">
+                    {% else %}
+                    <span class="brand-icon">🤖</span>
+                    {% endif %}
+                    {{ config.get('SITE_TITLE', '高效测试平台') }}
+                    <span class="brand-author">by {{ config.get('SITE_AUTHOR', 'longshen') }}</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="切换导航">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto">
+                        {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
+                                <i class="fas fa-home"></i><span>首页</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'tasks' %}active{% endif %}" href="{{ url_for('tasks') }}">
+                                <i class="fas fa-tasks"></i><span>任务</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'reports' %}active{% endif %}" href="{{ url_for('reports') }}">
+                                <i class="fas fa-chart-bar"></i><span>报告</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'nas.nas_finder' %}active{% endif %}" href="{{ url_for('nas.nas_finder') }}">
+                                <i class="fas fa-network-wired"></i><span>NAS设备</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'knowledge.knowledge_base' %}active{% endif %}" href="{{ url_for('knowledge.knowledge_base') }}">
+                                <i class="fas fa-book"></i><span>知识库</span>
+                            </a>
+                        </li>
+                        {% if current_user.is_admin() %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'users' %}active{% endif %}" href="{{ url_for('users') }}">
+                                <i class="fas fa-users"></i><span>用户</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'site_config' %}active{% endif %}" href="{{ url_for('site_config') }}">
+                                <i class="fas fa-cog"></i><span>网站设置</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item dropdown">
+                            <span id="userButton" class="nav-link waves-effect waves-dark" style="cursor: pointer; display: flex; align-items: center;">
+                                <i class="fas fa-user-circle" style="font-size: 1.3rem; margin-right: 8px;"></i>
+                                <span class="d-none d-md-inline-block me-1">{{ current_user.username }}</span>
+                                <i class="fas fa-angle-down"></i>
+                            </span>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'login' %}active{% endif %}" href="{{ url_for('login') }}">
+                                <i class="fas fa-sign-in-alt me-1"></i>登录
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 用户菜单 (放置在body级别，避免被导航栏限制) -->
+    <div id="userMenu" class="user-menu" style="display: none; position: fixed; width: 280px; z-index: 1050; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); overflow: hidden; font-size: 14px; background: linear-gradient(145deg, #ffffff, #f5f7fb); backdrop-filter: blur(10px);">
+        <!-- 用户信息头部 -->
+        <div style="padding: 18px 20px; background: linear-gradient(to right, #4158d0, #c850c0, #ffcc70); color: white; display: flex; align-items: center;">
+            <!-- 使用 Font Awesome 图标 -->
+            <i class="fas fa-user-circle" style="font-size: 42px; margin-right: 15px; color: white; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;"></i>
+            <div style="margin-left: 15px;">
+                <div style="font-weight: 600; font-size: 16px;">{{ current_user.username }}</div>
+                <div style="font-size: 12px; opacity: 0.9;">管理员账户</div>
+            </div>
+        </div>
+        <!-- 菜单项 -->
+        <div style="padding: 10px;">
+            <a href="{{ url_for('edit_profile') }}" class="menu-item">
+                <i class="fas fa-user-edit"></i> 编辑个人资料
+            </a>
+            <a href="{{ url_for('logout') }}" class="menu-item">
+                <i class="fas fa-sign-out-alt"></i> 退出登录
+            </a>
+        </div>
+    </div>
+
+    <!-- 主体内容 -->
+    <main class="container mt-4 fade-enter">
+        <!-- 添加闪现消息容器 -->
+        <div class="flash-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {# ... #}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- 底部区域 -->
+    <footer class="text-center mt-4 text-muted">
+        &copy; {{ config.get('SITE_AUTHOR', 'longshen') }}
+        - Version: {{ version }} 
+        - Last Build: {{ last_build_time }}
+    </footer>
+    
+    <!-- 引入基础JS库 -->
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    
+    <!-- 引入Toastr JS -->
+    <script src="{{ url_for('static', filename='js/toastr.min.js') }}"></script>
+    <!-- Toastr配置 - 直接初始化，不使用$(document).ready包装 -->
+    <script>
+        // 直接初始化toastr配置，确保立即生效
+        toastr.options = {
+            closeButton: true,
+            debug: false,
+            newestOnTop: true,
+            progressBar: true,
+            positionClass: 'toast-top-right',
+            preventDuplicates: false,
+            onclick: null,
+            showDuration: '300',
+            hideDuration: '1000',
+            timeOut: '5000',  // 5秒后自动关闭
+            extendedTimeOut: '1000',
+            showEasing: 'swing',
+            hideEasing: 'linear',
+            showMethod: 'fadeIn',
+            hideMethod: 'fadeOut'
+        };
+        console.log("Toastr配置完成");
+        
+        // 页面加载后立即测试toastr
+        window.addEventListener('load', function() {
+            // 检查是否从登录页面来
+            if (document.referrer.includes('/login') && window.location.pathname === '/') {
+                console.log("检测到从登录页面来到首页，直接显示toastr");
+                setTimeout(function() {
+                    toastr.success('欢迎回来！登录成功');
+                    console.log("已触发toastr登录成功消息");
+                }, 500);
+            }
+        });
+    </script>
+    
+    <!-- 主应用脚本 -->
+    <script src="{{ url_for('static', filename='js/main.js') }}?v={{ now }}"></script>
+
+    {% block scripts %}{% endblock %}
+    
+    <!-- Toast测试按钮 - 只在开发环境显示 -->
+    <div style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;">
+        <button onclick="toastr.success('测试成功！'); console.log('点击了测试按钮')" class="btn btn-sm btn-primary">
+            测试Toast
+        </button>
+    </div>
+</body>
+</html> 

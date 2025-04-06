@@ -1,0 +1,31 @@
+2025-03-02 12:30:58.623 | INFO     | __main__:main:100 - 开始执行自动化测试
+2025-03-02 12:30:58.624 | INFO     | __main__:main:104 - 运行参数: Namespace(module='all', submodule=None, env='test', report='html', parallel=1, tags=None, list_modules=False)
+2025-03-02 12:30:58.627 | INFO     | __main__:main:108 - 加载配置: test
+2025-03-02 12:30:58.627 | INFO     | __main__:main:160 - 开始执行API测试
+2025-03-02 12:30:58.627 | INFO     | api_test.api_test_runner:run:56 - 开始执行API测试
+2025-03-02 12:30:58.627 | INFO     | api_test.api_test_runner:run:62 - 找到 1 个API测试用例
+2025-03-02 12:30:58.627 | INFO     | api_test.api_test_runner:run:82 - 串行执行API测试
+2025-03-02 12:30:58.627 | INFO     | api_test.api_test_runner:_execute_test_case:202 - 执行API测试: 用户API测试
+2025-03-02 12:31:02.304 | ERROR    | api_test.api_test_runner:_execute_test_case:239 - 测试失败: 用户API测试, 状态码不匹配: 期望 200, 实际 502
+2025-03-02 12:31:02.305 | INFO     | api_test.api_test_runner:run:88 - API测试执行完成，共 1 个结果
+2025-03-02 12:31:02.305 | INFO     | __main__:main:164 - API测试执行完成
+2025-03-02 12:31:02.305 | INFO     | __main__:main:167 - 开始执行UI测试
+2025-03-02 12:31:02.306 | INFO     | ui_test.ui_test_runner:run:72 - 开始执行UI测试
+2025-03-02 12:31:02.306 | INFO     | ui_test.ui_test_runner:run:78 - 找到 1 个UI测试用例
+2025-03-02 12:31:02.306 | INFO     | ui_test.ui_test_runner:run:98 - 串行执行UI测试
+2025-03-02 12:31:02.307 | INFO     | ui_test.ui_test_runner:_execute_test_case:243 - 执行UI测试: 登录功能测试
+2025-03-02 12:31:05.605 | ERROR    | ui_test.ui_test_runner:_execute_test_case:295 - 测试执行异常: 登录功能测试, 错误: [WinError 193] %1 不是有效的 Win32 应用程序。
+2025-03-02 12:31:05.605 | INFO     | ui_test.ui_test_runner:run:104 - UI测试执行完成，共 1 个结果
+2025-03-02 12:31:05.605 | INFO     | __main__:main:171 - UI测试执行完成
+2025-03-02 12:31:05.605 | INFO     | __main__:main:174 - 开始执行SSH测试
+2025-03-02 12:31:05.605 | INFO     | ssh_test.ssh_test_runner:run:69 - 开始执行SSH测试
+2025-03-02 12:31:05.605 | INFO     | ssh_test.ssh_test_runner:run:75 - 找到 1 个SSH测试用例
+2025-03-02 12:31:05.605 | INFO     | ssh_test.ssh_test_runner:run:95 - 串行执行SSH测试
+2025-03-02 12:31:05.605 | INFO     | ssh_test.ssh_test_runner:_execute_test_case:234 - 执行SSH测试: 服务器状态检查
+2025-03-02 12:31:05.605 | ERROR    | ssh_test.ssh_test_runner:_create_ssh_client:193 - SSH连接失败: server.example.com:22, 错误: [Errno 2] No such file or directory: '~/.ssh/id_rsa'
+2025-03-02 12:31:05.606 | ERROR    | ssh_test.ssh_test_runner:_execute_test_case:332 - 测试执行异常: 服务器状态检查, 错误: [Errno 2] No such file or directory: '~/.ssh/id_rsa'
+2025-03-02 12:31:05.606 | INFO     | ssh_test.ssh_test_runner:run:101 - SSH测试执行完成，共 1 个结果
+2025-03-02 12:31:05.606 | INFO     | __main__:main:178 - SSH测试执行完成
+2025-03-02 12:31:05.606 | INFO     | common.report_generator:_generate_html_report:218 - HTML报告已生成: D:\Data\cusor\reports\report_20250302_123105.html
+2025-03-02 12:31:05.608 | INFO     | __main__:main:182 - 测试报告已生成: D:\Data\cusor\reports\report_20250302_123105.html
+2025-03-02 12:31:05.608 | INFO     | __main__:main:190 - 测试结果统计: 总计 3, 通过 0, 失败 3, 跳过 0

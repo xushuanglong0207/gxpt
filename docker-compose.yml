@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # Web应用服务
+  web:
+    build: .
+    container_name: test_platform_web
+    restart: unless-stopped
+    ports:
+      - "8089:8089"  # 使用非常用端口8089
+    volumes:
+      - ./reports:/app/reports  # 报告目录
+      - ./logs:/app/logs       # 日志目录
+      - ./data:/app/data       # 数据目录
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=run.py
+      - DATABASE_URL=mysql://test_user:test_password@db:3306/test_platform
+    depends_on:
+      - db
+
+  # MySQL数据库服务
+  db:
+    image: mysql:8.0
+    container_name: test_platform_db
+    restart: unless-stopped
+    ports:
+      - "3307:3306"  # 使用非常用端口3307
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=test_platform
+      - MYSQL_USER=test_user
+      - MYSQL_PASSWORD=test_password
+      - MYSQL_ROOT_PASSWORD=root_password
+    command: --default-authentication-plugin=mysql_native_password
+
+volumes:
+  mysql_data:
+    name: test_platform_mysql_data 

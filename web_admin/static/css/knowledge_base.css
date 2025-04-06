@@ -1,0 +1,172 @@
+/* 基础样式 */
+.module-node {
+    margin-bottom: 10px;
+}
+
+.module-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background: white;
+    border: 2px solid rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.module-header:hover {
+    background: #f8f9fa;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.action-icons {
+    display: inline-flex;
+    gap: 12px;
+    margin-left: 15px;
+}
+
+.action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    background: rgba(0,0,0,0.04);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-icon:hover {
+    background: rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+}
+
+/* 编辑器样式 */
+.editor-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.toolbar {
+    padding: 8px;
+    border-bottom: 2px solid #eee;
+}
+
+.toolbar button {
+    margin-right: 8px;
+}
+
+/* 模块树样式 */
+.module-tree {
+    padding: 15px;
+}
+
+.module-children {
+    margin-left: 20px;
+}
+
+/* 文章列表样式 */
+.articles-list {
+    margin-left: 40px;
+    margin-bottom: 15px;
+}
+
+.article-list-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.article-list-item:hover {
+    background: #f8f9fa;
+    transform: translateX(2px);
+}
+
+.article-list-item.active {
+    background: #e9ecef;
+    border-left: 3px solid #0d6efd;
+}
+
+/* 加载状态和错误状态 */
+.article-list-item.loading {
+    color: #6c757d;
+    cursor: default;
+}
+
+.article-list-item.loading:hover {
+    background: white;
+    transform: none;
+}
+
+.article-list-item.error {
+    color: #dc3545;
+    cursor: default;
+}
+
+.article-list-item.error:hover {
+    background: white;
+    transform: none;
+}
+
+/* 按钮样式 */
+.btn-add-article {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border: 2px solid #0d6efd;
+    border-radius: 4px;
+    color: #0d6efd;
+    background: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-article:hover {
+    background: #0d6efd;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-add-article i {
+    margin-right: 6px;
+}
+
+/* 欢迎页样式 */
+#welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    text-align: center;
+}
+
+#welcome-container i {
+    font-size: 3rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+#welcome-container h4 {
+    margin-bottom: 0.5rem;
+}
+
+#welcome-container p {
+    color: #6c757d;
+    max-width: 400px;
+    margin: 0 auto;
+}

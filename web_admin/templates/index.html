@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}首页 - 高效测试平台{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title">
+                    <i class="fas fa-tachometer-alt me-2"></i>系统概览
+                </h2>
+                <p class="card-text">欢迎使用高效测试平台，{{ username }}！</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-clock me-2"></i>最近任务
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group" id="recent-tasks">
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">加载中...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-end">
+                <a href="{{ url_for('tasks') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-list me-1"></i>查看全部
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-file-alt me-2"></i>最近报告
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group" id="recent-reports">
+                    {% if recent_reports %}
+                    {% for report in recent_reports %}
+                    <a href="/reports/{{ report.id }}.html" class="list-group-item list-group-item-action" target="_blank">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">
+                                <i class="fas fa-file-code me-1 text-primary"></i>
+                                {{ report.name }}
+                            </h6>
+                            <small>{{ report.created_at }}</small>
+                        </div>
+                        <p class="mb-1">
+                            <small>执行时长: {{ report.duration }}秒</small>
+                        </p>
+                    </a>
+                    {% endfor %}
+                    {% else %}
+                    <div class="text-center py-3">
+                        <p class="text-muted">暂无测试报告</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-footer text-end">
+                <a href="/reports/" class="btn btn-sm btn-primary">
+                    <i class="fas fa-folder-open me-1"></i>打开报告目录
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 页面加载完成后获取数据
+    $(document).ready(function() {
+        // 获取最近任务
+        $.get('/tasks', function(data) {
+            const recentTasks = $(data).find('#task-list .list-group-item').slice(0, 5);
+            if (recentTasks.length > 0) {
+                $('#recent-tasks').html(recentTasks);
+            } else {
+                $('#recent-tasks').html('<div class="text-center py-3">暂无任务</div>');
+            }
+        });
+        
+        // 获取最近报告
+        $.get('/reports', function(data) {
+            const recentReports = $(data).find('#report-list .list-group-item').slice(0, 5);
+            if (recentReports.length > 0) {
+                $('#recent-reports').html(recentReports);
+            } else {
+                $('#recent-reports').html('<div class="text-center py-3">暂无报告</div>');
+            }
+        });
+    });
+</script>
+{% endblock %} 

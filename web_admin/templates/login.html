@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 高效测试平台</title>
+    <!-- 字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}?v={{ now }}">
+    <!-- 引入新的下拉菜单修复样式 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dropdown-fix.css') }}?v={{ now }}">
+    <!-- 引入toastr CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/toastr.min.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+            <!-- 隐藏旧的flash消息显示区域 -->
+            <div id="flash-container" style="display:none;">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert" style="animation: fadeIn 0.5s;">
+                    {% if category == 'success' %}
+                    <i class="fas fa-check-circle me-1"></i>
+                    {% elif category == 'danger' %}
+                    <i class="fas fa-exclamation-circle me-1"></i>
+                    {% elif category == 'warning' %}
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    {% else %}
+                    <i class="fas fa-info-circle me-1"></i>
+                    {% endif %}
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+            </div>
+            
+            <div class="text-center mb-4">
+                <i class="fas fa-laptop-code text-primary" style="font-size: 3rem; filter: drop-shadow(0 4px 12px rgba(65, 88, 208, 0.3));"></i>
+            </div>
+            <h2 class="login-title">高效测试平台</h2>
+            <p class="login-subtitle">登录以继续访问测试管理系统</p>
+            
+            <form method="POST">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                    <i class="fas fa-user"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                    <i class="fas fa-lock"></i>
+                </div>
+                
+                <button type="submit" class="btn btn-login">
+                    <span>登录系统</span>
+                    <i class="fas fa-arrow-right ms-2"></i>
+                </button>
+            </form>
+            
+            <div class="login-footer">
+                <p>自动化测试管理平台 &copy; 2025 by <strong>longshen</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载指示器 -->
+    <div class="loading" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- JavaScript 库 -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 引入Toastr JS -->
+    <script src="{{ url_for('static', filename='js/toastr.min.js') }}"></script>
+    
+    <script>
+        // 配置toastr
+        toastr.options = {
+            closeButton: true,
+            debug: false,
+            newestOnTop: true,
+            progressBar: true,
+            positionClass: 'toast-top-right',
+            preventDuplicates: false,
+            onclick: null,
+            showDuration: '300',
+            hideDuration: '1000',
+            timeOut: '5000',
+            extendedTimeOut: '1000',
+            showEasing: 'swing',
+            hideEasing: 'linear',
+            showMethod: 'fadeIn',
+            hideMethod: 'fadeOut'
+        };
+        
+        $(document).ready(function() {
+            // 自动聚焦用户名输入框
+            $('#username').focus();
+            
+            // 表单提交时显示加载指示器
+            $('form').on('submit', function() {
+                $('.loading').fadeIn(200);
+            });
+            
+            // 处理Flash消息
+            setTimeout(function() {
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                    let toastType = '{{ category }}';
+                    // 将danger类型转换为error以匹配toastr系统
+                    if (toastType === 'danger') toastType = 'error';
+                    
+                    // 使用toastr显示消息
+                    switch(toastType) {
+                        case 'success':
+                            toastr.success('{{ message }}');
+                            break;
+                        case 'error':
+                            toastr.error('{{ message }}');
+                            break;
+                        case 'warning':
+                            toastr.warning('{{ message }}');
+                            break;
+                        default:
+                            toastr.info('{{ message }}');
+                            break;
+                    }
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+            }, 100);
+        });
+    </script>
+    
+    <style>
+    /* 添加简单的淡出动画 */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-10px); }
+    }
+    
+    .fade-out {
+        animation: fadeOut 0.5s forwards;
+    }
+    </style>
+</body>
+</html> 

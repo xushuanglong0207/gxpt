@@ -1,0 +1,76 @@
+# API自动化测试依赖
+requests==2.26.0
+urllib3==1.26.6
+certifi==2021.5.30
+charset-normalizer==2.0.4
+idna==3.2
+
+# UI自动化测试依赖
+selenium==4.8.2
+webdriver-manager==4.0.0
+pytest-xdist==3.3.1
+
+# SSH自动化测试依赖
+paramiko==3.1.0
+
+# 通用依赖
+pyyaml==6.0.1
+python-dotenv==0.19.0
+loguru==0.7.0
+allure-pytest==2.13.2
+
+# Flask依赖
+Flask==2.0.1
+Werkzeug==2.0.1
+Jinja2==3.0.1
+itsdangerous==2.0.1
+click==8.0.1
+MarkupSafe==2.0.1
+
+# Flask-Login依赖
+Flask-Login==0.5.0
+
+# Flask-SQLAlchemy依赖
+Flask-SQLAlchemy==2.5.1
+
+# SQLAlchemy依赖
+SQLAlchemy==1.4.23
+
+# pymysql依赖
+pymysql==1.0.2
+
+# cryptography依赖
+cryptography==3.4.8
+
+# bcrypt依赖
+bcrypt==3.2.0
+
+# six依赖
+six==1.16.0
+
+# cffi依赖
+cffi==1.14.6
+
+# pycparser依赖
+pycparser==2.20
+
+# Pillow依赖
+Pillow==8.3.2
+
+# python-magic依赖
+python-magic==0.4.24
+
+# python-dateutil依赖
+python-dateutil==2.8.2
+
+# pytz依赖
+pytz==2021.1
+
+# APScheduler依赖
+APScheduler==3.8.1
+
+# tzlocal依赖
+tzlocal==2.1
+
+# gunicorn依赖
+gunicorn==20.1.0 

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}用户管理 - 自动化测试平台{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-users me-2"></i>用户管理</h2>
+    <a href="{{ url_for('add_user') }}" class="btn btn-primary">
+        <i class="fas fa-user-plus me-1"></i>添加用户
+    </a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" id="user-filter" placeholder="搜索用户...">
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <span class="badge bg-info rounded-pill" id="user-count">{{ users|length }}</span> 个用户
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>用户名</th>
+                        <th>角色</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="user-list">
+                    {% if users %}
+                        {% for user in users %}
+                        <tr class="user-item" data-username="{{ user.username }}" data-role="{{ user.role }}">
+                            <td>{{ user.id }}</td>
+                            <td>
+                                {{ user.username }}
+                                {% if user.username == session.username %}
+                                <span class="badge bg-primary">当前用户</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user.role == 'admin' %}
+                                <span class="badge bg-danger">管理员</span>
+                                {% else %}
+                                <span class="badge bg-secondary">普通用户</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('edit_user', user_id=user.id) }}" class="btn btn-sm btn-outline-primary me-1">
+                                    <i class="fas fa-edit me-1"></i>编辑
+                                </a>
+                                {% if user.username != 'admin' and user.username != session.username %}
+                                <form method="post" action="{{ url_for('delete_user', user_id=user.id) }}" class="d-inline">
+                                    <button type="button" class="btn btn-sm btn-outline-danger delete-confirm">
+                                        <i class="fas fa-trash-alt me-1"></i>删除
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center py-3">暂无用户数据</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // 用户过滤
+        $('#user-filter').on('input', function() {
+            var filterValue = $(this).val().toLowerCase();
+            
+            $('.user-item').each(function() {
+                var username = $(this).data('username').toLowerCase();
+                var role = $(this).data('role').toLowerCase();
+                
+                if (username.includes(filterValue) || role.includes(filterValue)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
+</script>
+{% endblock %} 

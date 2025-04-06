@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}网站配置{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">网站配置</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('site_config') }}" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="site_title" class="form-label">网站标题</label>
+                            <input type="text" class="form-control" id="site_title" name="site_title" 
+                                   value="{{ site_title }}" required>
+                            <div class="form-text">显示在网站顶部导航栏和页脚的标题</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="site_author" class="form-label">作者名称</label>
+                            <input type="text" class="form-control" id="site_author" name="site_author" 
+                                   value="{{ site_author }}" required>
+                            <div class="form-text">显示在网站标题旁边和页脚的作者名称</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="site_favicon" class="form-label">网站图标</label>
+                            <div class="input-group">
+                                <input type="file" class="form-control" id="site_favicon" name="site_favicon"
+                                       accept=".ico,.png,.jpg,.jpeg,.svg">
+                                <label class="input-group-text" for="site_favicon">选择文件</label>
+                            </div>
+                            <div class="form-text">显示在浏览器标签页的网站图标 (支持.ico, .png, .jpg, .svg格式)</div>
+                            {% if site_favicon %}
+                            <div class="mt-2">
+                                <p>当前图标:</p>
+                                <img src="{{ url_for('static', filename=site_favicon) }}" alt="当前网站图标" style="max-width: 48px; max-height: 48px;">
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="preview-box p-3 mb-4 border rounded bg-light">
+                            <h5>预览效果：</h5>
+                            <div class="d-flex align-items-center mb-3">
+                                {% if site_favicon %}
+                                <img src="{{ url_for('static', filename=site_favicon) }}" alt="网站图标" id="preview_favicon" class="me-2" style="width: 24px; height: 24px;">
+                                {% endif %}
+                                <div class="navbar-brand" style="font-size: 1.5rem; margin-right: 10px; color: #333;">
+                                    <span id="preview_title">{{ site_title }}</span>
+                                    <span class="brand-author" style="font-size: 0.8rem;">by <span id="preview_author">{{ site_author }}</span></span>
+                                </div>
+                            </div>
+                            <div class="text-center" style="font-size: 0.8rem; color: #6c757d;">
+                                <span>© 2025 <span id="preview_footer_title">{{ site_title }}</span> | </span>
+                                <span class="footer-author">作者: <span id="preview_footer_author">{{ site_author }}</span></span>
+                                <span> | 版本 1.0.0</span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> 返回
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> 保存配置
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 实时预览效果
+    document.addEventListener('DOMContentLoaded', function() {
+        const siteTitle = document.getElementById('site_title');
+        const siteAuthor = document.getElementById('site_author');
+        const siteFavicon = document.getElementById('site_favicon');
+        const previewTitle = document.getElementById('preview_title');
+        const previewAuthor = document.getElementById('preview_author');
+        const previewFooterTitle = document.getElementById('preview_footer_title');
+        const previewFooterAuthor = document.getElementById('preview_footer_author');
+        
+        siteTitle.addEventListener('input', function() {
+            previewTitle.textContent = this.value || '高效测试平台';
+            previewFooterTitle.textContent = this.value || '高效测试平台';
+        });
+        
+        siteAuthor.addEventListener('input', function() {
+            previewAuthor.textContent = this.value || 'longshen';
+            previewFooterAuthor.textContent = this.value || 'longshen';
+        });
+        
+        // 预览图标
+        if (siteFavicon) {
+            siteFavicon.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        let previewFavicon = document.getElementById('preview_favicon');
+                        if (!previewFavicon) {
+                            previewFavicon = document.createElement('img');
+                            previewFavicon.id = 'preview_favicon';
+                            previewFavicon.className = 'me-2';
+                            previewFavicon.style.width = '24px';
+                            previewFavicon.style.height = '24px';
+                            
+                            const previewBox = document.querySelector('.navbar-brand').parentNode;
+                            previewBox.insertBefore(previewFavicon, previewBox.firstChild);
+                        }
+                        previewFavicon.src = e.target.result;
+                        previewFavicon.alt = '网站图标';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %} 

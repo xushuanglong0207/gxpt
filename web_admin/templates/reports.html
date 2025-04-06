@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}报告查看{% endblock %}
+
+{% block styles %}
+<style>
+    .report-card {
+        margin-bottom: 15px;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+    }
+    .report-title {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+    .report-meta {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    .report-actions {
+        margin-top: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>报告查看</h1>
+    
+    <div class="mt-4">
+        {% if reports %}
+            {% for report in reports %}
+            <div class="report-card">
+                <div class="report-title">测试报告 {{ report.id }}</div>
+                <div class="report-meta">
+                    创建时间: {{ report.create_time }}
+                </div>
+                <div class="report-actions">
+                    <a href="/reports/{{ report.id }}" class="btn btn-primary btn-sm" target="_blank">
+                        <i class="fas fa-eye"></i> 查看报告
+                    </a>
+                    <button class="btn btn-danger btn-sm" onclick="deleteReport('{{ report.id }}')">
+                        <i class="fas fa-trash"></i> 删除
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">
+                暂无报告
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- 引入toastr库 -->
+<script src="{{ url_for('static', filename='js/toastr.min.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/toastr.min.css') }}">
+<script>
+// 设置toastr配置
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-top-right",
+    timeOut: 5000,
+    preventDuplicates: true,
+    newestOnTop: true,
+    showMethod: 'fadeIn',
+    hideMethod: 'fadeOut',
+    closeMethod: 'fadeOut'
+};
+
+// 删除报告
+function deleteReport(reportId) {
+    if (confirm('确定要删除这份报告吗？')) {
+        console.log(`开始删除报告: ${reportId}`);
+        fetch(`/reports/${reportId}.html`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            console.log(`收到服务器响应: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            console.log('删除报告结果:', data);
+            if (data.success) {
+                // 检查是否是"报告不存在"的特殊情况
+                if (data.not_found) {
+                    // 直接使用toastr显示警告
+                    toastr.warning(data.message || '报告不存在');
+                    // 隐藏报告卡片
+                    hideReportCard(reportId);
+                } else {
+                    // 普通成功情况
+                    toastr.success('报告删除成功');
+                    // 隐藏对应的报告卡片元素
+                    hideReportCard(reportId);
+                }
+            } else {
+                // 处理删除失败情况
+                const message = data.message || '删除失败';
+                console.error(`删除失败: ${message}`);
+                // 直接使用toastr显示错误
+                toastr.error(message);
+            }
+        })
+        .catch(error => {
+            console.error('删除报告出错:', error);
+            toastr.error('删除失败，请稍后重试');
+        });
+    }
+}
+
+// 隐藏报告卡片元素
+function hideReportCard(reportId) {
+    // 查找对应的报告卡片元素
+    const reportCards = document.querySelectorAll('.report-card');
+    reportCards.forEach(card => {
+        // 获取卡片的删除按钮
+        const deleteButton = card.querySelector('button.btn-danger');
+        if (deleteButton && deleteButton.getAttribute('onclick').includes(reportId)) {
+            // 找到匹配的卡片，将其隐藏
+            card.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %} 

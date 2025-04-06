@@ -1,0 +1,14 @@
+2025-03-02 00:10:14.010 | INFO     | __main__:main:62 - 开始执行自动化测试
+2025-03-02 00:10:14.012 | INFO     | __main__:main:66 - 运行参数: Namespace(module='api', env='test', report='html', parallel=1, tags=None)
+2025-03-02 00:10:14.014 | INFO     | __main__:main:70 - 加载配置: test
+2025-03-02 00:10:14.015 | INFO     | __main__:main:80 - 开始执行API测试
+2025-03-02 00:10:14.015 | INFO     | api_test.api_test_runner:run:42 - 开始执行API测试
+2025-03-02 00:10:14.016 | INFO     | api_test.api_test_runner:run:46 - 找到 1 个API测试用例
+2025-03-02 00:10:14.017 | INFO     | api_test.api_test_runner:run:66 - 串行执行API测试
+2025-03-02 00:10:14.017 | INFO     | api_test.api_test_runner:_execute_test_case:169 - 执行API测试: 用户API测试
+2025-03-02 00:10:17.681 | ERROR    | api_test.api_test_runner:_execute_test_case:206 - 测试失败: 用户API测试, 状态码不匹配: 期望 200, 实际 502
+2025-03-02 00:10:17.682 | INFO     | api_test.api_test_runner:run:72 - API测试执行完成，共 1 个结果
+2025-03-02 00:10:17.683 | INFO     | __main__:main:84 - API测试执行完成
+2025-03-02 00:10:17.685 | INFO     | common.report_generator:_generate_html_report:218 - HTML报告已生成: D:\Data\cusor\reports\report_20250302_001017.html
+2025-03-02 00:10:17.686 | INFO     | __main__:main:102 - 测试报告已生成: D:\Data\cusor\reports\report_20250302_001017.html
+2025-03-02 00:10:17.687 | INFO     | __main__:main:110 - 测试结果统计: 总计 1, 通过 0, 失败 1, 跳过 0

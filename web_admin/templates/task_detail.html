@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+
+{% block title %}任务详情 - 自动化测试平台{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="section-title"><i class="fas fa-clipboard-list me-2 text-primary"></i>任务详情</h2>
+    <div>
+        <a href="{{ url_for('tasks') }}" class="btn btn-outline-secondary me-2">
+            <i class="fas fa-arrow-left me-1"></i>返回列表
+        </a>
+        {% if task.status == 'pending' %}
+        <form method="post" action="{{ url_for('run_task', task_id=task.id) }}" class="d-inline">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-play me-1"></i>运行任务
+            </button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4 fade-in">
+    <div class="card-header task-detail-header">
+        <div class="row">
+            <div class="col-md-8">
+                <h3>{{ task.name }}</h3>
+                <p class="mb-0">
+                    <span id="task-status-badge" class="badge status-badge status-{{ task.status }}" data-task-id="{{ task.id }}">
+                        {{ task.status }}
+                    </span>
+                </p>
+            </div>
+            <div class="col-md-4 text-end">
+                <p class="mb-0">
+                    <small>创建于: {{ task.created_at }}</small><br>
+                    <small>创建者: {{ task.created_by }}</small>
+                    {% if task.started_at %}
+                    <br><small>开始于: {{ task.started_at }}</small>
+                    {% endif %}
+                    {% if task.finished_at %}
+                    <br><small id="finished-time">完成于: {{ task.finished_at }}</small>
+                    {% else %}
+                    <br><small id="finished-time" style="display:none;">完成于: </small>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5><i class="fas fa-cogs me-2 text-primary"></i>任务配置</h5>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>模块</th>
+                            <td>{{ task.modules|join(', ') }}</td>
+                        </tr>
+                        {% if task.submodules %}
+                        <tr>
+                            <th>子模块</th>
+                            <td>{{ task.submodules|join(', ') }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <th>环境</th>
+                            <td>{{ task.env }}</td>
+                        </tr>
+                        <tr>
+                            <th>报告类型</th>
+                            <td>{{ task.report_type }}</td>
+                        </tr>
+                        <tr>
+                            <th>并行数</th>
+                            <td>{{ task.parallel }}</td>
+                        </tr>
+                        {% if task.tags %}
+                        <tr>
+                            <th>标签</th>
+                            <td>{{ task.tags }}</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="col-md-6">
+                <h5><i class="fas fa-chart-bar me-2 text-primary"></i>执行结果</h5>
+                <div id="task-result-area">
+                {% if task.status == 'completed' or task.status == 'failed' %}
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>结果</th>
+                            <td id="task-result">
+                                {% if task.result == 'success' %}
+                                <span class="text-success"><i class="fas fa-check-circle me-1"></i>成功</span>
+                                {% elif task.result == 'failure' %}
+                                <span class="text-danger"><i class="fas fa-times-circle me-1"></i>失败</span>
+                                {% elif task.result == 'error' %}
+                                <span class="text-warning"><i class="fas fa-exclamation-circle me-1"></i>错误</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% if task.error %}
+                        <tr id="error-row">
+                            <th>错误信息</th>
+                            <td>
+                                <pre class="text-danger" id="error-message">{{ task.error }}</pre>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr id="error-row" style="display:none;">
+                            <th>错误信息</th>
+                            <td>
+                                <pre class="text-danger" id="error-message"></pre>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+                {% elif task.status == 'running' %}
+                <div class="text-center py-4" id="running-indicator">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">运行中...</span>
+                    </div>
+                    <p>任务正在运行中，将自动刷新状态...</p>
+                    <div class="progress mb-3" style="height: 10px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             role="progressbar" style="width: 100%"></div>
+                    </div>
+                    <p class="text-muted"><small>页面每5秒自动刷新一次状态</small></p>
+                </div>
+                <table class="table" id="result-table" style="display:none;">
+                    <tbody>
+                        <tr>
+                            <th>结果</th>
+                            <td id="result-value"></td>
+                        </tr>
+                        <tr id="dynamic-error-row" style="display:none;">
+                            <th>错误信息</th>
+                            <td>
+                                <pre class="text-danger" id="dynamic-error-message"></pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="text-center py-4">
+                    <p class="text-muted">任务尚未运行</p>
+                </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4" id="reports-section">
+            <div class="col">
+                <h5><i class="fas fa-file-alt me-2 text-primary"></i>测试报告</h5>
+                <div class="list-group" id="reports-list">
+                    {% if reports %}
+                    {% for report in reports %}
+                    <a href="/reports/{{ report.id }}.html" class="list-group-item list-group-item-action" target="_blank">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">
+                                <i class="fas fa-file-code me-1 text-primary"></i>
+                                {{ report.name }}
+                            </h6>
+                            <small>{{ report.created_at }}</small>
+                        </div>
+                        <p class="mb-1">
+                            <small>执行时长: {{ report.duration }}秒</small>
+                        </p>
+                    </a>
+                    {% endfor %}
+                    {% else %}
+                    <div class="text-center py-3" id="no-reports-message">
+                        <p class="text-muted">暂无测试报告</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col">
+                <div class="d-flex justify-content-between">
+                    <div id="run-button-area">
+                    {% if task.status != 'running' %}
+                    <form method="post" action="{{ url_for('run_task', task_id=task.id) }}">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-play me-1"></i>运行任务
+                        </button>
+                    </form>
+                    {% else %}
+                    <button class="btn btn-secondary" disabled>
+                        <i class="fas fa-spinner fa-spin me-1"></i>任务运行中
+                    </button>
+                    {% endif %}
+                    </div>
+                    <form method="post" action="{{ url_for('delete_task', task_id=task.id) }}">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash-alt me-1"></i>删除任务
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // 如果任务正在运行，则每5秒检查一次状态
+        {% if task.status == 'running' %}
+        function checkTaskStatus() {
+            $.ajax({
+                url: '/tasks/{{ task.id }}/status',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status !== 'running') {
+                        // 更新任务状态标签
+                        $('#task-status-badge')
+                            .removeClass('status-running')
+                            .addClass('status-' + data.status)
+                            .text(data.status);
+                        
+                        // 更新完成时间
+                        $('#finished-time').text('完成于: ' + data.finished_at).show();
+                        
+                        // 隐藏运行中指示器，显示结果表格
+                        $('#running-indicator').hide();
+                        $('#result-table').show();
+                        
+                        // 更新结果
+                        let resultHtml = '';
+                        if (data.result === 'success') {
+                            resultHtml = '<span class="text-success"><i class="fas fa-check-circle me-1"></i>成功</span>';
+                        } else if (data.result === 'failure') {
+                            resultHtml = '<span class="text-danger"><i class="fas fa-times-circle me-1"></i>失败</span>';
+                        } else if (data.result === 'error') {
+                            resultHtml = '<span class="text-warning"><i class="fas fa-exclamation-circle me-1"></i>错误</span>';
+                        }
+                        $('#result-value').html(resultHtml);
+                        
+                        // 如果有错误信息，显示错误行
+                        if (data.error) {
+                            $('#dynamic-error-row').show();
+                            $('#dynamic-error-message').text(data.error);
+                        }
+                        
+                        // 更新运行按钮区域
+                        $('#run-button-area').html(`
+                            <form method="post" action="{{ url_for('run_task', task_id=task.id) }}">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-play me-1"></i>运行任务
+                                </button>
+                            </form>
+                        `);
+                        
+                        // 2秒后刷新页面以获取报告
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        // 如果仍在运行中，继续检查
+                        setTimeout(checkTaskStatus, 5000);
+                    }
+                },
+                error: function() {
+                    // 如果发生错误，稍后再试
+                    setTimeout(checkTaskStatus, 8000);
+                }
+            });
+        }
+        
+        // 开始检查状态
+        setTimeout(checkTaskStatus, 2000);
+        {% endif %}
+        
+        // 确认删除
+        $('form[action^="/tasks/delete/"]').on('submit', function(e) {
+            if (!confirm('确定要删除此任务吗？此操作不可撤销。')) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %} 

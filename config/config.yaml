@@ -1,0 +1,40 @@
+# 通用配置
+
+# 报告配置
+report:
+  type: html  # 报告类型: html, allure, json
+  path: reports  # 报告保存路径
+
+# 日志配置
+log:
+  level: INFO  # 日志级别: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  path: logs  # 日志保存路径
+  rotation: 100MB  # 日志轮转大小
+  retention: 30 days  # 日志保留时间
+
+# API测试配置
+api:
+  base_url: http://localhost:8080  # API基础URL
+  timeout: 30  # 请求超时时间(秒)
+  headers:  # 默认请求头
+    Content-Type: application/json
+    User-Agent: AutoTestPlatform/1.0
+
+# UI测试配置
+ui:
+  base_url: http://localhost:8080  # UI基础URL
+  browser: chrome  # 浏览器类型: chrome, firefox, edge
+  headless: true  # 是否使用无头模式
+  timeout: 30  # 元素等待超时时间(秒)
+  screenshot_on_failure: true  # 失败时是否截图
+
+# SSH测试配置
+ssh:
+  timeout: 30  # SSH命令超时时间(秒)
+  default_port: 22  # 默认SSH端口
+
+# 并行执行配置
+parallel:
+  api: 5  # API测试并行数
+  ui: 2  # UI测试并行数
+  ssh: 3  # SSH测试并行数 

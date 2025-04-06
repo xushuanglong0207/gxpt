@@ -1,0 +1,12 @@
+{
+    "storage": {
+        "name": "存储组1",
+        "question": "存储组几个人",
+        "answer": "8个"
+    },
+    "performance": {
+        "name": "性能组",
+        "question": "性能优化主要的优化设备内存大小",
+        "answer": "4GB"
+    }
+}

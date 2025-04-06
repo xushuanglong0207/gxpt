@@ -1,0 +1,38 @@
+{
+  "name": "用户API测试",
+  "description": "测试用户相关的API接口",
+  "tags": ["api", "user", "example"],
+  "method": "GET",
+  "endpoint": "/api/users",
+  "headers": {
+    "Authorization": "Bearer {{token}}"
+  },
+  "params": {
+    "page": 1,
+    "limit": 10
+  },
+  "expected_status": 200,
+  "expected_response": {
+    "success": true
+  },
+  "validate_schema": {
+    "type": "object",
+    "required": ["success", "data", "total"],
+    "properties": {
+      "success": { "type": "boolean" },
+      "data": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["id", "name", "email"],
+          "properties": {
+            "id": { "type": "integer" },
+            "name": { "type": "string" },
+            "email": { "type": "string", "format": "email" }
+          }
+        }
+      },
+      "total": { "type": "integer" }
+    }
+  }
+} 

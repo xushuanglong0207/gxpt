@@ -1,0 +1,406 @@
+2025-03-02 01:27:47,254 - TaskScheduler - INFO - 任务配置文件不存在，将创建新文件
+2025-03-02 01:27:47,255 - TaskScheduler - INFO - 任务配置已保存
+2025-03-02 01:27:47,255 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:27:47,255 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:36:50,886 - TaskScheduler - INFO - 已加载 0 个任务
+2025-03-02 01:36:50,886 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:36:50,886 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:36:50,906 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.103:5000
+2025-03-02 01:36:50,906 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-02 01:36:50,906 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:36:51,068 - TaskScheduler - INFO - 已加载 0 个任务
+2025-03-02 01:36:51,072 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:36:51,072 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:36:51,085 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:36:51,086 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:36:59,509 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:36:59] "[32mGET / HTTP/1.1[0m" 302 -
+2025-03-02 01:36:59,526 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:36:59] "GET /login HTTP/1.1" 200 -
+2025-03-02 01:36:59,541 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:36:59] "[33mGET /static/images/logo.png HTTP/1.1[0m" 404 -
+2025-03-02 01:36:59,554 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:36:59] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-03-02 01:37:02,304 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:37:02] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-02 01:38:31,615 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:38:31] "[35m[1mPOST /login HTTP/1.1[0m" 500 -
+2025-03-02 01:38:31,640 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:38:31] "GET /login?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-03-02 01:38:31,642 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:38:31] "GET /login?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-03-02 01:38:31,646 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:38:31] "GET /login?__debugger__=yes&cmd=resource&f=console.png&s=JxASCg6FCDY5CxomtWie HTTP/1.1" 200 -
+2025-03-02 01:38:31,681 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:38:31] "GET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-03-02 01:39:31,502 - werkzeug - INFO -  * Detected change in 'D:\\Data\\cusor\\web_admin\\app.py', reloading
+2025-03-02 01:39:31,525 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:39:31,693 - TaskScheduler - INFO - 已加载 0 个任务
+2025-03-02 01:39:31,694 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:39:31,694 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:39:31,707 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:39:31,708 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:40:10,874 - werkzeug - INFO -  * Detected change in 'D:\\Data\\cusor\\web_admin\\app.py', reloading
+2025-03-02 01:40:10,896 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:40:11,055 - TaskScheduler - INFO - 已加载 0 个任务
+2025-03-02 01:40:11,056 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:40:11,056 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:40:11,068 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:40:11,069 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:40:12,079 - werkzeug - INFO -  * Detected change in 'D:\\Data\\cusor\\web_admin\\app.py', reloading
+2025-03-02 01:40:12,101 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:40:12,259 - TaskScheduler - INFO - 已加载 0 个任务
+2025-03-02 01:40:12,259 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:40:12,259 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:40:12,272 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:40:12,273 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:41:05,208 - TaskScheduler - INFO - 已加载 0 个任务
+2025-03-02 01:41:05,209 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:41:05,209 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:41:05,228 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.103:5000
+2025-03-02 01:41:05,228 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-02 01:41:05,228 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:41:05,391 - TaskScheduler - INFO - 已加载 0 个任务
+2025-03-02 01:41:05,391 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:41:05,391 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:41:05,404 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:41:05,405 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:41:07,117 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:41:07] "[32mGET / HTTP/1.1[0m" 302 -
+2025-03-02 01:41:07,130 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:41:07] "GET /login HTTP/1.1" 200 -
+2025-03-02 01:41:07,161 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:41:07] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:41:13,337 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:41:13] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-03-02 01:41:13,363 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:41:13] "[35m[1mGET /dashboard HTTP/1.1[0m" 500 -
+2025-03-02 01:41:13,388 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:41:13] "GET /dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-03-02 01:41:13,393 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:41:13] "GET /dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-03-02 01:41:13,402 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:41:13] "GET /dashboard?__debugger__=yes&cmd=resource&f=console.png&s=FZRHJ4e4IXA6LDbfy9Ux HTTP/1.1" 200 -
+2025-03-02 01:41:13,443 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:41:13] "GET /dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-03-02 01:41:19,953 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:41:19] "[32mGET / HTTP/1.1[0m" 302 -
+2025-03-02 01:41:19,960 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:41:19] "GET /login HTTP/1.1" 200 -
+2025-03-02 01:41:19,977 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:41:19] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-03-02 01:41:27,639 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:41:27] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-03-02 01:41:27,646 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:41:27] "[35m[1mGET /dashboard HTTP/1.1[0m" 500 -
+2025-03-02 01:41:27,670 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:41:27] "GET /dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-03-02 01:41:27,670 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:41:27] "GET /dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-03-02 01:41:27,714 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:41:27] "GET /dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-03-02 01:43:39,232 - werkzeug - INFO -  * Detected change in 'D:\\Data\\cusor\\web_admin\\app.py', reloading
+2025-03-02 01:43:39,254 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:43:39,418 - TaskScheduler - INFO - 已加载 0 个任务
+2025-03-02 01:43:39,418 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:43:39,418 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:43:39,433 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:43:39,434 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:43:40,443 - werkzeug - INFO -  * Detected change in 'D:\\Data\\cusor\\web_admin\\app.py', reloading
+2025-03-02 01:43:40,465 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:43:40,621 - TaskScheduler - INFO - 已加载 0 个任务
+2025-03-02 01:43:40,622 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:43:40,622 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:43:40,634 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:43:40,636 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:44:36,931 - werkzeug - INFO -  * Detected change in 'D:\\Data\\cusor\\web_admin\\app.py', reloading
+2025-03-02 01:44:36,951 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:44:37,110 - TaskScheduler - INFO - 已加载 0 个任务
+2025-03-02 01:44:37,110 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:44:37,110 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:44:37,123 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:44:37,124 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:45:47,959 - TaskScheduler - INFO - 已加载 0 个任务
+2025-03-02 01:45:47,959 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:45:47,959 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:45:47,977 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.103:5000
+2025-03-02 01:45:47,977 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-02 01:45:47,978 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:45:48,130 - TaskScheduler - INFO - 已加载 0 个任务
+2025-03-02 01:45:48,131 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:45:48,131 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:45:48,143 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:45:48,144 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:45:49,779 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:45:49] "[32mGET / HTTP/1.1[0m" 302 -
+2025-03-02 01:45:49,800 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:45:49] "GET /dashboard HTTP/1.1" 200 -
+2025-03-02 01:45:49,845 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:45:49] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-02 01:45:49,846 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:45:49] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:46:00,810 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:00] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-03-02 01:46:00,818 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:00] "GET /login HTTP/1.1" 200 -
+2025-03-02 01:46:00,844 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:00] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:46:07,720 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:07] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-03-02 01:46:07,726 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:07] "GET /dashboard HTTP/1.1" 200 -
+2025-03-02 01:46:07,751 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:07] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:46:07,752 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:07] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:46:30,983 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:30] "GET /reports HTTP/1.1" 200 -
+2025-03-02 01:46:31,005 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:31] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:46:31,007 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:31] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:46:34,112 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:34] "GET /reports HTTP/1.1" 200 -
+2025-03-02 01:46:34,128 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:34] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:46:34,128 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:34] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:46:37,311 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:37] "GET /tasks HTTP/1.1" 200 -
+2025-03-02 01:46:37,330 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:37] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:46:37,331 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:37] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:46:38,454 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:38] "[35m[1mGET /tasks/create HTTP/1.1[0m" 500 -
+2025-03-02 01:46:38,476 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:38] "GET /tasks/create?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-03-02 01:46:38,483 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:38] "GET /tasks/create?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-03-02 01:46:38,518 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:38] "GET /tasks/create?__debugger__=yes&cmd=resource&f=console.png&s=3sa9QFvNiDlghHFcqO7s HTTP/1.1" 200 -
+2025-03-02 01:46:38,528 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:46:38] "GET /tasks/create?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-03-02 01:47:22,232 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:47:22] "[32mGET / HTTP/1.1[0m" 302 -
+2025-03-02 01:47:22,237 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:47:22] "GET /dashboard HTTP/1.1" 200 -
+2025-03-02 01:47:22,261 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:47:22] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:47:22,262 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:47:22] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:47:25,500 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:47:25] "GET /scheduled_tasks HTTP/1.1" 200 -
+2025-03-02 01:47:25,521 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:47:25] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:47:25,522 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:47:25] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:47:26,475 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:47:26] "GET /scheduled_tasks/add HTTP/1.1" 200 -
+2025-03-02 01:47:26,498 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:47:26] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:47:26,499 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:47:26] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:48:00,586 - TaskScheduler - INFO - 已注册任务到调度器: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 01:48:00,587 - TaskScheduler - INFO - 任务配置已保存
+2025-03-02 01:48:00,587 - TaskScheduler - INFO - 添加任务成功: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 01:48:00,587 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:00] "[32mPOST /scheduled_tasks/add HTTP/1.1[0m" 302 -
+2025-03-02 01:48:00,591 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:00] "GET /scheduled_tasks HTTP/1.1" 200 -
+2025-03-02 01:48:00,614 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:00] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:48:00,619 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:00] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:48:07,997 - TaskScheduler - INFO - 已禁用任务: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 01:48:07,998 - TaskScheduler - INFO - 任务配置已保存
+2025-03-02 01:48:07,999 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:07] "[32mPOST /scheduled_tasks/toggle/task_1740851280 HTTP/1.1[0m" 302 -
+2025-03-02 01:48:08,002 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:08] "GET /scheduled_tasks HTTP/1.1" 200 -
+2025-03-02 01:48:08,020 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:08] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:48:08,022 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:08] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:48:08,824 - TaskScheduler - INFO - 已注册任务到调度器: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 01:48:08,824 - TaskScheduler - INFO - 已启用任务: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 01:48:08,825 - TaskScheduler - INFO - 任务配置已保存
+2025-03-02 01:48:08,825 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:08] "[32mPOST /scheduled_tasks/toggle/task_1740851280 HTTP/1.1[0m" 302 -
+2025-03-02 01:48:08,829 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:08] "GET /scheduled_tasks HTTP/1.1" 200 -
+2025-03-02 01:48:08,847 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:08] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:48:08,849 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:08] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:48:12,081 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:12] "GET /scheduled_tasks/edit/task_1740851280 HTTP/1.1" 200 -
+2025-03-02 01:48:12,109 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:12] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:48:12,111 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:12] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:48:17,569 - TaskScheduler - INFO - 已注册任务到调度器: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 01:48:17,569 - TaskScheduler - INFO - 任务配置已保存
+2025-03-02 01:48:17,570 - TaskScheduler - INFO - 更新任务成功: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 01:48:17,570 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:17] "[32mPOST /scheduled_tasks/edit/task_1740851280 HTTP/1.1[0m" 302 -
+2025-03-02 01:48:17,575 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:17] "GET /scheduled_tasks HTTP/1.1" 200 -
+2025-03-02 01:48:17,599 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:17] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:48:17,599 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:17] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:48:45,665 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:45] "GET /tasks HTTP/1.1" 200 -
+2025-03-02 01:48:45,696 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:45] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:48:45,697 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:45] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:48:46,087 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:46] "[32mGET / HTTP/1.1[0m" 302 -
+2025-03-02 01:48:46,094 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:46] "GET /dashboard HTTP/1.1" 200 -
+2025-03-02 01:48:46,117 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:46] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:48:46,121 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:46] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:48:56,912 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:56] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-03-02 01:48:56,918 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:56] "GET /login HTTP/1.1" 200 -
+2025-03-02 01:48:56,942 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:56] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:48:58,800 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:58] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-03-02 01:48:58,807 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:58] "GET /dashboard HTTP/1.1" 200 -
+2025-03-02 01:48:58,839 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:58] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:48:58,840 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:48:58] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:49:01,088 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:49:01] "GET /users HTTP/1.1" 200 -
+2025-03-02 01:49:01,120 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:49:01] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:49:01,121 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:49:01] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:49:02,648 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:49:02] "GET /users/edit/1 HTTP/1.1" 200 -
+2025-03-02 01:49:02,677 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:49:02] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:49:02,678 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:49:02] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:49:04,177 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:49:04] "[32mPOST /users/edit/1 HTTP/1.1[0m" 302 -
+2025-03-02 01:49:04,181 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:49:04] "GET /users HTTP/1.1" 200 -
+2025-03-02 01:49:04,204 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:49:04] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:49:04,205 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2025 01:49:04] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:50:19,710 - werkzeug - INFO -  * Detected change in 'D:\\Data\\cusor\\web_admin\\app.py', reloading
+2025-03-02 01:50:19,761 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:50:19,924 - TaskScheduler - INFO - 已注册任务到调度器: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 01:50:19,924 - TaskScheduler - INFO - 已加载 1 个任务
+2025-03-02 01:50:19,925 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:50:19,925 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:50:19,939 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:50:19,941 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:50:53,284 - werkzeug - INFO -  * Detected change in 'D:\\Data\\cusor\\web_admin\\app.py', reloading
+2025-03-02 01:50:53,359 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:50:53,528 - TaskScheduler - INFO - 已注册任务到调度器: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 01:50:53,528 - TaskScheduler - INFO - 已加载 1 个任务
+2025-03-02 01:50:53,529 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:50:53,529 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:50:53,544 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:50:53,545 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:50:54,557 - werkzeug - INFO -  * Detected change in 'D:\\Data\\cusor\\web_admin\\app.py', reloading
+2025-03-02 01:50:54,580 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:50:54,783 - TaskScheduler - INFO - 已注册任务到调度器: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 01:50:54,783 - TaskScheduler - INFO - 已加载 1 个任务
+2025-03-02 01:50:54,785 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:50:54,785 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:50:54,797 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:50:54,798 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:51:03,852 - werkzeug - INFO -  * Detected change in 'D:\\Data\\cusor\\web_admin\\app.py', reloading
+2025-03-02 01:51:03,908 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:51:04,070 - TaskScheduler - INFO - 已注册任务到调度器: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 01:51:04,070 - TaskScheduler - INFO - 已加载 1 个任务
+2025-03-02 01:51:04,071 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:51:04,071 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:51:04,084 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:51:04,085 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:55:09,090 - werkzeug - INFO -  * Detected change in 'D:\\Data\\cusor\\web_admin\\app.py', reloading
+2025-03-02 01:55:09,130 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:55:09,302 - TaskScheduler - INFO - 已注册任务到调度器: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 01:55:09,302 - TaskScheduler - INFO - 已加载 1 个任务
+2025-03-02 01:55:09,302 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:55:09,302 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:55:09,329 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:55:09,330 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:55:24,116 - TaskScheduler - INFO - 已注册任务到调度器: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 01:55:24,116 - TaskScheduler - INFO - 已加载 1 个任务
+2025-03-02 01:55:24,116 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:55:24,116 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:55:24,135 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.103:5000
+2025-03-02 01:55:24,135 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-02 01:55:24,137 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 01:55:24,296 - TaskScheduler - INFO - 已注册任务到调度器: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 01:55:24,296 - TaskScheduler - INFO - 已加载 1 个任务
+2025-03-02 01:55:24,296 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 01:55:24,296 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 01:55:24,313 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 01:55:24,315 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 01:55:29,284 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:29] "[32mGET / HTTP/1.1[0m" 302 -
+2025-03-02 01:55:29,303 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:29] "GET /dashboard HTTP/1.1" 200 -
+2025-03-02 01:55:29,344 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:29] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-03-02 01:55:29,344 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:29] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-02 01:55:41,331 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:41] "GET /edit_profile HTTP/1.1" 200 -
+2025-03-02 01:55:41,350 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:41] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:55:41,354 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:41] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:55:42,923 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:42] "[32mPOST /edit_profile HTTP/1.1[0m" 302 -
+2025-03-02 01:55:42,928 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:42] "GET /dashboard HTTP/1.1" 200 -
+2025-03-02 01:55:42,948 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:42] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:55:42,949 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:42] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:55:47,695 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:47] "GET /reports HTTP/1.1" 200 -
+2025-03-02 01:55:47,718 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:47] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:55:47,719 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:47] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:55:50,995 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:50] "[32mPOST /reports/delete/4 HTTP/1.1[0m" 302 -
+2025-03-02 01:55:51,000 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:51] "GET /reports HTTP/1.1" 200 -
+2025-03-02 01:55:51,017 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:51] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:55:51,018 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:51] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:55:53,158 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:53] "GET /reports HTTP/1.1" 200 -
+2025-03-02 01:55:53,174 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:53] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:55:53,174 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:53] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:55:56,654 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:56] "GET /users HTTP/1.1" 200 -
+2025-03-02 01:55:56,677 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:56] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:55:56,677 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:56] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:55:59,472 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:59] "GET /users/add HTTP/1.1" 200 -
+2025-03-02 01:55:59,494 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:59] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:55:59,495 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:55:59] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:03,661 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:03] "[32mPOST /users/add HTTP/1.1[0m" 302 -
+2025-03-02 01:56:03,664 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:03] "GET /users/add HTTP/1.1" 200 -
+2025-03-02 01:56:03,683 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:03] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:03,683 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:03] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:11,624 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:11] "[32mPOST /users/add HTTP/1.1[0m" 302 -
+2025-03-02 01:56:11,628 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:11] "GET /users HTTP/1.1" 200 -
+2025-03-02 01:56:11,649 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:11] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:11,651 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:11] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:19,556 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:19] "GET /users/edit/2 HTTP/1.1" 200 -
+2025-03-02 01:56:19,587 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:19] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:19,589 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:19] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:20,373 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:20] "[32mPOST /users/edit/2 HTTP/1.1[0m" 302 -
+2025-03-02 01:56:20,377 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:20] "GET /users HTTP/1.1" 200 -
+2025-03-02 01:56:20,404 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:20] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:20,405 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:20] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:21,930 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:21] "[32mPOST /users/delete/2 HTTP/1.1[0m" 302 -
+2025-03-02 01:56:21,936 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:21] "GET /users HTTP/1.1" 200 -
+2025-03-02 01:56:21,953 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:21] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:21,954 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:21] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:26,376 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:26] "GET /reports HTTP/1.1" 200 -
+2025-03-02 01:56:26,411 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:26] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:26,412 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:26] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:28,396 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:28] "[35m[1mGET /reports/5 HTTP/1.1[0m" 500 -
+2025-03-02 01:56:28,412 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:28] "GET /reports/5?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-03-02 01:56:28,413 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:28] "GET /reports/5?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-03-02 01:56:28,457 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:28] "GET /reports/5?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-03-02 01:56:32,702 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:32] "[32mPOST /reports/delete/5 HTTP/1.1[0m" 302 -
+2025-03-02 01:56:32,707 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:32] "GET /reports HTTP/1.1" 200 -
+2025-03-02 01:56:32,732 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:32] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:32,732 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:32] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:33,509 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:33] "GET /tasks HTTP/1.1" 200 -
+2025-03-02 01:56:33,532 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:33] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:33,533 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:33] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:36,631 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:36] "[32mGET / HTTP/1.1[0m" 302 -
+2025-03-02 01:56:36,637 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:36] "GET /dashboard HTTP/1.1" 200 -
+2025-03-02 01:56:36,672 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:36] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:36,672 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:36] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:38,156 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:38] "GET /tasks/create HTTP/1.1" 200 -
+2025-03-02 01:56:38,180 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:38] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:38,182 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:38] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:51,479 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:51] "[32mPOST /tasks/create HTTP/1.1[0m" 302 -
+2025-03-02 01:56:51,483 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:51] "GET /tasks HTTP/1.1" 200 -
+2025-03-02 01:56:51,513 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:51] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:51,513 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:51] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:55,358 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:55] "[32mGET /tasks/1740851811 HTTP/1.1[0m" 302 -
+2025-03-02 01:56:55,363 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:55] "GET /tasks HTTP/1.1" 200 -
+2025-03-02 01:56:55,385 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:55] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:55,386 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:55] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:56,718 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:56] "[32mGET /tasks/1740851811 HTTP/1.1[0m" 302 -
+2025-03-02 01:56:56,723 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:56] "GET /tasks HTTP/1.1" 200 -
+2025-03-02 01:56:56,746 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:56] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:56,747 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:56] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:57,268 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:57] "[32mGET /tasks/1740851811 HTTP/1.1[0m" 302 -
+2025-03-02 01:56:57,271 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:57] "GET /tasks HTTP/1.1" 200 -
+2025-03-02 01:56:57,297 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:57] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:57,298 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:57] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:57,447 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:57] "[32mGET /tasks/1740851811 HTTP/1.1[0m" 302 -
+2025-03-02 01:56:57,452 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:57] "GET /tasks HTTP/1.1" 200 -
+2025-03-02 01:56:57,475 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:57] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:57,476 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:57] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:56:58,485 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:58] "[32mGET /tasks/1740851811 HTTP/1.1[0m" 302 -
+2025-03-02 01:56:58,490 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:58] "GET /tasks HTTP/1.1" 200 -
+2025-03-02 01:56:58,506 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:58] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:56:58,506 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:56:58] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:57:04,334 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:04] "[32mGET / HTTP/1.1[0m" 302 -
+2025-03-02 01:57:04,341 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:04] "GET /dashboard HTTP/1.1" 200 -
+2025-03-02 01:57:04,373 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:04] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:57:04,373 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:04] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:57:14,015 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:14] "GET /tasks HTTP/1.1" 200 -
+2025-03-02 01:57:14,043 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:14] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:57:14,045 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:14] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:57:15,727 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:15] "[32mGET /tasks/1740851811 HTTP/1.1[0m" 302 -
+2025-03-02 01:57:15,731 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:15] "GET /tasks HTTP/1.1" 200 -
+2025-03-02 01:57:15,755 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:15] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:57:15,756 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:15] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:57:20,453 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:20] "[32mGET / HTTP/1.1[0m" 302 -
+2025-03-02 01:57:20,460 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:20] "GET /dashboard HTTP/1.1" 200 -
+2025-03-02 01:57:20,484 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:20] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:57:20,485 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:20] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:57:22,431 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:22] "GET /reports HTTP/1.1" 200 -
+2025-03-02 01:57:22,460 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:22] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:57:22,461 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:22] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:57:23,247 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:23] "GET /users HTTP/1.1" 200 -
+2025-03-02 01:57:23,277 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:23] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:57:23,279 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:23] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:57:24,183 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:24] "GET /reports HTTP/1.1" 200 -
+2025-03-02 01:57:24,210 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:24] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:57:24,211 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:24] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:57:24,766 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:24] "[32mGET / HTTP/1.1[0m" 302 -
+2025-03-02 01:57:24,774 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:24] "GET /dashboard HTTP/1.1" 200 -
+2025-03-02 01:57:24,800 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:24] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:57:24,801 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:57:24] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:58:01,473 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:58:01] "GET /reports HTTP/1.1" 200 -
+2025-03-02 01:58:01,502 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:58:01] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-02 01:58:01,503 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:58:01] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-02 01:58:02,482 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:58:02] "[35m[1mGET /reports/6 HTTP/1.1[0m" 500 -
+2025-03-02 01:58:02,499 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:58:02] "GET /reports/6?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-03-02 01:58:02,500 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:58:02] "GET /reports/6?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-03-02 01:58:02,557 - werkzeug - INFO - 192.168.1.103 - - [02/Mar/2025 01:58:02] "GET /reports/6?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-03-02 02:00:31,215 - werkzeug - INFO -  * Detected change in 'D:\\Data\\cusor\\web_admin\\app.py', reloading
+2025-03-02 02:00:31,291 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 02:00:31,462 - TaskScheduler - INFO - 已注册任务到调度器: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 02:00:31,462 - TaskScheduler - INFO - 已加载 1 个任务
+2025-03-02 02:00:31,462 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 02:00:31,462 - TaskScheduler - INFO - 调度器已启动
+2025-03-02 02:00:31,480 - werkzeug - WARNING -  * Debugger is active!
+2025-03-02 02:00:31,481 - werkzeug - INFO -  * Debugger PIN: 574-471-852
+2025-03-02 08:30:00,061 - TaskScheduler - INFO - 执行任务: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 08:30:00,061 - TaskScheduler - INFO - 任务配置已保存
+2025-03-02 08:30:00,232 - TaskScheduler - ERROR - 任务执行失败: SZHZFTTH113524605 (ID: task_1740851280), 状态码: 9009, 耗时: 0.17秒
+2025-03-02 08:30:00,781 - TaskScheduler - INFO - 执行任务: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 08:30:00,781 - TaskScheduler - INFO - 任务配置已保存
+2025-03-02 08:30:00,896 - TaskScheduler - ERROR - 任务执行失败: SZHZFTTH113524605 (ID: task_1740851280), 状态码: 9009, 耗时: 0.11秒
+2025-03-02 09:40:04,290 - werkzeug - INFO -  * Detected change in 'D:\\Data\\cusor\\web_admin\\app.py', reloading
+2025-03-02 09:40:04,359 - werkzeug - INFO -  * Restarting with stat
+2025-03-02 09:40:04,546 - TaskScheduler - INFO - 已注册任务到调度器: SZHZFTTH113524605 (ID: task_1740851280)
+2025-03-02 09:40:04,546 - TaskScheduler - INFO - 已加载 1 个任务
+2025-03-02 09:40:04,552 - TaskScheduler - INFO - 调度器主循环开始
+2025-03-02 09:40:04,552 - TaskScheduler - INFO - 调度器已启动

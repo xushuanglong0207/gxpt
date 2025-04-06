@@ -1,0 +1,470 @@
+/**
+ * KnowledgePro 高级知识库编辑器样式
+ * 提供现代化、专业的知识编辑界面
+ */
+
+/* 主容器样式 */
+.knowledge-pro-editor {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    height: 600px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* 工具栏样式 */
+.knowledge-editor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    gap: 0.25rem;
+}
+
+.knowledge-editor-toolbar .btn-group {
+    margin-bottom: 0.25rem;
+}
+
+.knowledge-editor-toolbar button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.2rem;
+    font-size: 0.875rem;
+    border-radius: 0.2rem;
+    color: #495057;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    transition: all 0.15s ease-in-out;
+}
+
+.knowledge-editor-toolbar button:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.knowledge-editor-toolbar button:active,
+.knowledge-editor-toolbar button.active {
+    background-color: #4dabf7;
+    border-color: #339af0;
+    color: #fff;
+}
+
+.knowledge-editor-toolbar button i {
+    font-size: 0.875rem;
+}
+
+/* 编辑区域样式 */
+.knowledge-editor-content {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    line-height: 1.6;
+    color: #333;
+    background-color: #fff;
+    word-wrap: break-word;
+    outline: none;
+}
+
+.knowledge-editor-content:focus {
+    box-shadow: inset 0 0 0 1px rgba(38, 132, 255, 0.2);
+}
+
+/* 只读模式 */
+.knowledge-editor-content[contenteditable="false"] {
+    background-color: #f9f9f9;
+    border-color: #eee;
+}
+
+/* 内容样式美化 */
+.knowledge-editor-content h1 {
+    font-size: 2rem;
+    margin: 1.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+    color: #212529;
+    font-weight: 600;
+}
+
+.knowledge-editor-content h2 {
+    font-size: 1.75rem;
+    margin: 1.4rem 0 0.9rem;
+    padding-bottom: 0.3rem;
+    color: #343a40;
+    font-weight: 600;
+}
+
+.knowledge-editor-content h3 {
+    font-size: 1.5rem;
+    margin: 1.3rem 0 0.8rem;
+    color: #495057;
+    font-weight: 600;
+}
+
+.knowledge-editor-content h4 {
+    font-size: 1.25rem;
+    margin: 1.2rem 0 0.7rem;
+    color: #495057;
+    font-weight: 600;
+}
+
+.knowledge-editor-content p {
+    margin: 0 0 1rem;
+}
+
+.knowledge-editor-content pre {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #dee2e6;
+    overflow-x: auto;
+    font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 1rem 0;
+}
+
+.knowledge-editor-content code {
+    font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.9em;
+    padding: 0.2em 0.4em;
+    background-color: #f8f9fa;
+    border-radius: 3px;
+}
+
+.knowledge-editor-content pre code {
+    padding: 0;
+    background-color: transparent;
+}
+
+.knowledge-editor-content blockquote {
+    padding: 0.75rem 1.25rem;
+    margin: 0 0 1rem;
+    border-left: 4px solid #adb5bd;
+    background-color: #f8f9fa;
+    color: #495057;
+}
+
+.knowledge-editor-content ul, 
+.knowledge-editor-content ol {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+}
+
+.knowledge-editor-content li {
+    margin-bottom: 0.25rem;
+}
+
+.knowledge-editor-content a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.knowledge-editor-content a:hover {
+    text-decoration: underline;
+}
+
+.knowledge-editor-content img {
+    max-width: 100%;
+    height: auto;
+    margin: 1rem 0;
+    border-radius: 0.25rem;
+}
+
+.knowledge-editor-content hr {
+    margin: 1.5rem 0;
+    border: 0;
+    border-top: 1px solid #dee2e6;
+}
+
+.knowledge-editor-content table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+    border-collapse: collapse;
+}
+
+.knowledge-editor-content table th,
+.knowledge-editor-content table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border: 1px solid #dee2e6;
+}
+
+.knowledge-editor-content table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+.knowledge-editor-content table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* 辅助样式 */
+.placeholder {
+    color: #adb5bd;
+}
+
+/* 动态高亮样式 */
+.knowledge-editor-content::selection {
+    background-color: rgba(13, 110, 253, 0.3);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .knowledge-editor-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .knowledge-editor-toolbar .btn-group {
+        display: flex;
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+    
+    .knowledge-editor-toolbar button {
+        flex: 1;
+    }
+}
+
+/* 知识库模块树样式 */
+.kb-module-tree {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.kb-module {
+    margin: 0;
+    padding: 0;
+}
+
+.kb-module-header {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.kb-module-header:hover {
+    background-color: #f8f9fa;
+}
+
+.kb-module-icon {
+    margin-right: 0.5rem;
+    color: #6c757d;
+}
+
+.kb-module-name {
+    flex: 1;
+    font-weight: 500;
+}
+
+.kb-module-actions {
+    display: none;
+}
+
+.kb-module-header:hover .kb-module-actions {
+    display: flex;
+}
+
+.kb-module-actions button {
+    background: none;
+    border: none;
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-left: 0.25rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+}
+
+.kb-module-actions button:hover {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.kb-module-children {
+    padding-left: 1.5rem;
+}
+
+.kb-articles {
+    margin-top: 0.5rem;
+}
+
+.kb-article-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    margin-bottom: 0.25rem;
+}
+
+.kb-article-item:hover {
+    background-color: #f8f9fa;
+}
+
+.kb-article-item.active {
+    background-color: #e9ecef;
+}
+
+.kb-article-icon {
+    margin-right: 0.5rem;
+    color: #6c757d;
+}
+
+.kb-article-title {
+    flex: 1;
+}
+
+.kb-article-actions {
+    display: none;
+}
+
+.kb-article-item:hover .kb-article-actions {
+    display: flex;
+}
+
+.kb-article-actions button {
+    background: none;
+    border: none;
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-left: 0.25rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+}
+
+.kb-article-actions button:hover {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+/* 搜索结果样式 */
+.kb-search-results {
+    padding: 0.5rem 0;
+}
+
+.kb-search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.kb-search-header h5 {
+    margin: 0;
+    font-weight: 500;
+}
+
+.kb-article-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.kb-article-meta {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+.kb-article-summary {
+    font-size: 0.85rem;
+    color: #495057;
+    margin-top: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: #f8f9fa;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border-left: 3px solid #dee2e6;
+}
+
+.kb-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    color: #dc3545;
+}
+
+.kb-error i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.kb-error h4 {
+    margin-bottom: 0.5rem;
+    color: #dc3545;
+}
+
+.kb-error p {
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+/* 编辑器样式修正 */
+.tox-tinymce {
+    border-radius: 0.25rem !important;
+    border-color: #dee2e6 !important;
+}
+
+.tox-editor-container {
+    background-color: #fff !important;
+}
+
+/* 欢迎页样式 */
+.kb-welcome {
+    text-align: center;
+    padding: 3rem 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.kb-welcome-icon {
+    font-size: 4rem;
+    color: #dee2e6;
+    margin-bottom: 1.5rem;
+}
+
+.kb-welcome-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+.kb-welcome-desc {
+    color: #6c757d;
+    margin-bottom: 2rem;
+    font-size: 1.125rem;
+}
+
+.kb-welcome-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+} 

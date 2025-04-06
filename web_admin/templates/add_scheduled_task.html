@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block title %}添加定时任务 - 自动化测试平台{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="anime-font">添加定时任务</h2>
+                <a href="{{ url_for('scheduled_tasks') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> 返回列表
+                </a>
+            </div>
+            
+            <div class="card fade-in">
+                <div class="card-header">
+                    <h5>任务信息</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('add_scheduled_task') }}">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">任务名称 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">任务描述</label>
+                            <textarea class="form-control" id="description" name="description" rows="2"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="command" class="form-label">执行命令 <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="command" name="command" rows="3" required></textarea>
+                            <div class="form-text">输入要执行的命令，支持系统命令和Python脚本</div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="schedule_type" class="form-label">调度类型 <span class="text-danger">*</span></label>
+                                <select class="form-select" id="schedule_type" name="schedule_type" required>
+                                    <option value="daily">每天</option>
+                                    <option value="weekly">每周</option>
+                                    <option value="monthly">每月</option>
+                                    <option value="interval">间隔时间</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="schedule_value" class="form-label">调度值 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="schedule_value" name="schedule_value" required>
+                                <div class="form-text" id="schedule_value_help">格式: HH:MM (例如: 08:30)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="notify" name="notify">
+                            <label class="form-check-label" for="notify">启用钉钉通知</label>
+                        </div>
+                        
+                        <div id="notification-settings" class="border rounded p-3 mb-3 bg-light d-none">
+                            <h6 class="mb-3">钉钉通知设置</h6>
+                            
+                            <div class="mb-3">
+                                <label for="webhook_url" class="form-label">Webhook URL <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="webhook_url" name="webhook_url">
+                                <div class="form-text">钉钉机器人的Webhook地址</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="secret" class="form-label">签名密钥</label>
+                                <input type="text" class="form-control" id="secret" name="secret">
+                                <div class="form-text">钉钉机器人的签名密钥（如果启用了安全设置）</div>
+                            </div>
+                            
+                            <button type="button" id="test-dingtalk" class="btn btn-sm btn-outline-info">
+                                <i class="fas fa-bell me-1"></i> 测试通知
+                            </button>
+                            <span id="test-result" class="ms-2"></span>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> 保存任务
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="anime-badge">
+    longshen
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // 根据调度类型更新帮助文本
+    $('#schedule_type').on('change', function() {
+        var type = $(this).val();
+        var helpText = '';
+        var placeholder = '';
+        
+        switch(type) {
+            case 'daily':
+                helpText = '格式: HH:MM (例如: 08:30)';
+                placeholder = '08:30';
+                break;
+            case 'weekly':
+                helpText = '格式: Weekday HH:MM (例如: Monday 08:30)';
+                placeholder = 'Monday 08:30';
+                break;
+            case 'monthly':
+                helpText = '格式: Day HH:MM (例如: 1 08:30，表示每月1号)';
+                placeholder = '1 08:30';
+                break;
+            case 'interval':
+                helpText = '间隔秒数 (例如: 3600 表示每小时)';
+                placeholder = '3600';
+                break;
+        }
+        
+        $('#schedule_value_help').text(helpText);
+        $('#schedule_value').attr('placeholder', placeholder);
+    });
+    
+    // 切换通知设置显示
+    $('#notify').on('change', function() {
+        if($(this).is(':checked')) {
+            $('#notification-settings').removeClass('d-none');
+            $('#webhook_url').attr('required', true);
+        } else {
+            $('#notification-settings').addClass('d-none');
+            $('#webhook_url').attr('required', false);
+        }
+    });
+    
+    // 测试钉钉通知
+    $('#test-dingtalk').on('click', function() {
+        var webhook_url = $('#webhook_url').val();
+        var secret = $('#secret').val();
+        
+        if (!webhook_url) {
+            $('#test-result').html('<span class="text-danger">请填写Webhook URL</span>');
+            return;
+        }
+        
+        // 显示加载状态
+        $('#test-result').html('<span class="text-muted"><i class="fas fa-spinner fa-spin"></i> 发送中...</span>');
+        
+        // 发送测试请求
+        $.ajax({
+            url: '{{ url_for("test_dingtalk") }}',
+            type: 'POST',
+            data: {
+                webhook_url: webhook_url,
+                secret: secret
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#test-result').html('<span class="text-success"><i class="fas fa-check-circle"></i> ' + response.message + '</span>');
+                } else {
+                    $('#test-result').html('<span class="text-danger"><i class="fas fa-times-circle"></i> ' + response.message + '</span>');
+                }
+            },
+            error: function() {
+                $('#test-result').html('<span class="text-danger"><i class="fas fa-times-circle"></i> 请求失败</span>');
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 

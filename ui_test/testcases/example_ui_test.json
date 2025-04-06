@@ -1,0 +1,68 @@
+{
+  "name": "登录功能测试",
+  "description": "测试用户登录功能",
+  "tags": ["ui", "login", "example"],
+  "url": "http://example.com/login",
+  "steps": [
+    {
+      "name": "输入用户名",
+      "action": "input",
+      "locator": {
+        "type": "id",
+        "value": "username"
+      },
+      "value": "testuser",
+      "screenshot": false
+    },
+    {
+      "name": "输入密码",
+      "action": "input",
+      "locator": {
+        "type": "id",
+        "value": "password"
+      },
+      "value": "password123",
+      "screenshot": false
+    },
+    {
+      "name": "点击登录按钮",
+      "action": "click",
+      "locator": {
+        "type": "css",
+        "value": "button[type='submit']"
+      },
+      "wait": 1,
+      "screenshot": true
+    },
+    {
+      "name": "验证登录成功",
+      "action": "assert_text",
+      "locator": {
+        "type": "css",
+        "value": ".welcome-message"
+      },
+      "value": "欢迎",
+      "wait": 2,
+      "screenshot": true
+    },
+    {
+      "name": "检查用户菜单",
+      "action": "click",
+      "locator": {
+        "type": "css",
+        "value": ".user-menu"
+      },
+      "screenshot": true
+    },
+    {
+      "name": "验证用户名显示正确",
+      "action": "assert_text",
+      "locator": {
+        "type": "css",
+        "value": ".user-info"
+      },
+      "value": "testuser",
+      "screenshot": true
+    }
+  ]
+} 

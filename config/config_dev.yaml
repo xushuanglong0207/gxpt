@@ -1,0 +1,39 @@
+# 开发环境配置
+
+# API测试配置
+api:
+  base_url: http://dev-api.example.com  # 开发环境API基础URL
+  timeout: 10  # 开发环境请求超时时间(秒)
+  headers:
+    X-Environment: development
+
+# UI测试配置
+ui:
+  base_url: http://dev-ui.example.com  # 开发环境UI基础URL
+  browser: chrome
+  headless: false  # 开发环境使用有头模式，方便调试
+  timeout: 10
+
+# SSH测试配置
+ssh:
+  default_servers:
+    - name: dev-server-1
+      host: dev-server-1.example.com
+      port: 22
+      username: dev_user
+      password: dev_password  # 注意：实际使用中应使用密钥认证或环境变量
+    - name: dev-server-2
+      host: dev-server-2.example.com
+      port: 22
+      username: dev_user
+      key_file: ~/.ssh/dev_key
+
+# 并行执行配置
+parallel:
+  api: 2  # 开发环境API测试并行数
+  ui: 1  # 开发环境UI测试并行数
+  ssh: 1  # 开发环境SSH测试并行数
+
+# 日志配置
+log:
+  level: DEBUG  # 开发环境使用DEBUG级别 

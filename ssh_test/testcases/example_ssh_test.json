@@ -1,0 +1,77 @@
+{
+  "name": "服务器状态检查",
+  "description": "检查服务器的基本状态",
+  "tags": ["ssh", "server", "example"],
+  "host": "server.example.com",
+  "port": 22,
+  "username": "admin",
+  "key_file": "~/.ssh/id_rsa",
+  "commands": [
+    {
+      "name": "检查磁盘空间",
+      "command": "df -h",
+      "timeout": 5
+    },
+    {
+      "name": "检查内存使用",
+      "command": "free -m",
+      "timeout": 5
+    },
+    {
+      "name": "检查CPU负载",
+      "command": "uptime",
+      "timeout": 5
+    },
+    {
+      "name": "检查进程数量",
+      "command": "ps aux | wc -l",
+      "timeout": 5
+    },
+    {
+      "name": "检查网络连接",
+      "command": "netstat -an | grep ESTABLISHED | wc -l",
+      "timeout": 10
+    },
+    {
+      "name": "检查服务状态",
+      "command": "systemctl status nginx",
+      "timeout": 10
+    }
+  ],
+  "expected_results": {
+    "检查磁盘空间": {
+      "exit_code": 0,
+      "stdout": [
+        "Filesystem",
+        "Size",
+        "Used",
+        "Avail"
+      ]
+    },
+    "检查内存使用": {
+      "exit_code": 0,
+      "stdout": [
+        "Mem:",
+        "Swap:"
+      ]
+    },
+    "检查CPU负载": {
+      "exit_code": 0,
+      "stdout": [
+        "load average"
+      ]
+    },
+    "检查进程数量": {
+      "exit_code": 0
+    },
+    "检查网络连接": {
+      "exit_code": 0
+    },
+    "检查服务状态": {
+      "exit_code": 0,
+      "stdout": [
+        "Active: active (running)"
+      ]
+    }
+  }
+} 

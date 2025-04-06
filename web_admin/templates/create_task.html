@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}创建任务 - 自动化测试平台{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-plus-circle me-2"></i>创建测试任务</h2>
+    <a href="{{ url_for('tasks') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i>返回列表
+    </a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="post" action="{{ url_for('create_task') }}">
+            <div class="mb-3">
+                <label for="name" class="form-label">任务名称</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="module-select" class="form-label">测试模块</label>
+                <select class="form-select" id="module-select" name="modules" multiple required>
+                    {% for module in available_modules %}
+                    <option value="{{ module }}">{{ module }}</option>
+                    {% endfor %}
+                </select>
+                <div class="form-text">按住Ctrl键可以选择多个模块</div>
+            </div>
+            
+            <div id="submodule-container">
+                <!-- 子模块选择区域，由JavaScript动态生成 -->
+            </div>
+            
+            <div class="mb-3">
+                <label for="env" class="form-label">测试环境</label>
+                <select class="form-select" id="env" name="env">
+                    <option value="test">测试环境</option>
+                    <option value="dev">开发环境</option>
+                    <option value="prod">生产环境</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="report_type" class="form-label">报告类型</label>
+                <select class="form-select" id="report_type" name="report_type">
+                    <option value="html">HTML报告</option>
+                    <option value="json">JSON报告</option>
+                    <option value="allure">Allure报告</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="parallel" class="form-label">并行执行数</label>
+                <input type="number" class="form-control" id="parallel" name="parallel" value="1" min="1" max="10">
+            </div>
+            
+            <div class="mb-3">
+                <label for="tags" class="form-label">标签</label>
+                <input type="text" class="form-control" id="tags" name="tags" placeholder="用逗号分隔多个标签">
+                <div class="form-text">例如: 冒烟测试,回归测试</div>
+            </div>
+            
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="reset" class="btn btn-outline-secondary me-md-2">
+                    <i class="fas fa-undo me-1"></i>重置
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i>创建任务
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // 初始化Select2插件，如果有的话
+        if ($.fn.select2) {
+            $('#module-select').select2({
+                placeholder: '选择测试模块',
+                allowClear: true
+            });
+        }
+        
+        // 模块选择变化时更新子模块选项
+        $('#module-select').on('change', function() {
+            var selectedModules = $(this).val();
+            var submoduleContainer = $('#submodule-container');
+            submoduleContainer.empty();
+            
+            if (selectedModules && selectedModules.length > 0) {
+                selectedModules.forEach(function(module) {
+                    var submoduleSelect = $('<div class="mb-3">' +
+                        '<label class="form-label">'+module+'子模块</label>' +
+                        '<select class="form-select" name="submodules" id="submodule-'+module+'" multiple>' +
+                        '</select>' +
+                        '<div class="form-text">按住Ctrl键可以选择多个子模块</div>' +
+                        '</div>');
+                    
+                    submoduleContainer.append(submoduleSelect);
+                    
+                    // 加载子模块选项
+                    var submodules = JSON.parse('{{ available_submodules|tojson|safe }}');
+                    if (submodules[module]) {
+                        var selectElement = $('#submodule-'+module);
+                        submodules[module].forEach(function(submodule) {
+                            selectElement.append('<option value="'+submodule+'">'+submodule+'</option>');
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %} 

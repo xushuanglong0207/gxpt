@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+
+{% block title %}编辑定时任务 - 自动化测试平台{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="anime-font">编辑定时任务</h2>
+                <a href="{{ url_for('scheduled_tasks') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> 返回列表
+                </a>
+            </div>
+            
+            <div class="card fade-in">
+                <div class="card-header">
+                    <h5>任务信息</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('edit_scheduled_task', task_id=task.id) }}">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">任务名称 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ task.name }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">任务描述</label>
+                            <textarea class="form-control" id="description" name="description" rows="2">{{ task.description }}</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="command" class="form-label">执行命令 <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="command" name="command" rows="3" required>{{ task.command }}</textarea>
+                            <div class="form-text">输入要执行的命令，支持系统命令和Python脚本</div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="schedule_type" class="form-label">调度类型 <span class="text-danger">*</span></label>
+                                <select class="form-select" id="schedule_type" name="schedule_type" required>
+                                    <option value="daily" {% if task.schedule_type == 'daily' %}selected{% endif %}>每天</option>
+                                    <option value="weekly" {% if task.schedule_type == 'weekly' %}selected{% endif %}>每周</option>
+                                    <option value="monthly" {% if task.schedule_type == 'monthly' %}selected{% endif %}>每月</option>
+                                    <option value="interval" {% if task.schedule_type == 'interval' %}selected{% endif %}>间隔时间</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="schedule_value" class="form-label">调度值 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="schedule_value" name="schedule_value" value="{{ task.schedule_value }}" required>
+                                <div class="form-text" id="schedule_value_help">
+                                    {% if task.schedule_type == 'daily' %}
+                                    格式: HH:MM (例如: 08:30)
+                                    {% elif task.schedule_type == 'weekly' %}
+                                    格式: Weekday HH:MM (例如: Monday 08:30)
+                                    {% elif task.schedule_type == 'monthly' %}
+                                    格式: Day HH:MM (例如: 1 08:30，表示每月1号)
+                                    {% elif task.schedule_type == 'interval' %}
+                                    间隔秒数 (例如: 3600 表示每小时)
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="notify" name="notify" {% if task.notify %}checked{% endif %}>
+                            <label class="form-check-label" for="notify">启用钉钉通知</label>
+                        </div>
+                        
+                        <div id="notification-settings" class="border rounded p-3 mb-3 bg-light {% if not task.notify %}d-none{% endif %}">
+                            <h6 class="mb-3">钉钉通知设置</h6>
+                            
+                            <div class="mb-3">
+                                <label for="webhook_url" class="form-label">Webhook URL <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="webhook_url" name="webhook_url" value="{{ task.notify_config.webhook_url if task.notify_config else '' }}">
+                                <div class="form-text">钉钉机器人的Webhook地址</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="secret" class="form-label">签名密钥</label>
+                                <input type="text" class="form-control" id="secret" name="secret" value="{{ task.notify_config.secret if task.notify_config else '' }}">
+                                <div class="form-text">钉钉机器人的签名密钥（如果启用了安全设置）</div>
+                            </div>
+                            
+                            <button type="button" id="test-dingtalk" class="btn btn-sm btn-outline-info">
+                                <i class="fas fa-bell me-1"></i> 测试通知
+                            </button>
+                            <span id="test-result" class="ms-2"></span>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> 保存更改
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card mt-4 fade-in">
+                <div class="card-header bg-light">
+                    <h5>任务状态</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <h6>创建时间</h6>
+                                <p>{{ task.created_at or '未知' }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <h6>上次执行时间</h6>
+                                <p>{{ task.last_run or '从未运行' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <form method="post" action="{{ url_for('toggle_scheduled_task', task_id=task.id) }}">
+                            <button type="submit" class="btn btn-sm {% if task.enabled %}btn-warning{% else %}btn-success{% endif %}">
+                                {% if task.enabled %}
+                                <i class="fas fa-pause me-1"></i> 暂停任务
+                                {% else %}
+                                <i class="fas fa-play me-1"></i> 启用任务
+                                {% endif %}
+                            </button>
+                        </form>
+                        
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="fas fa-trash-alt me-1"></i> 删除任务
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 删除确认对话框 -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">确认删除</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>确定要删除任务"{{ task.name }}"吗？此操作不可撤销。</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <form method="post" action="{{ url_for('delete_scheduled_task', task_id=task.id) }}">
+                    <button type="submit" class="btn btn-danger">确认删除</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="anime-badge">
+    longshen
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // 根据调度类型更新帮助文本
+    $('#schedule_type').on('change', function() {
+        var type = $(this).val();
+        var helpText = '';
+        var placeholder = '';
+        
+        switch(type) {
+            case 'daily':
+                helpText = '格式: HH:MM (例如: 08:30)';
+                placeholder = '08:30';
+                break;
+            case 'weekly':
+                helpText = '格式: Weekday HH:MM (例如: Monday 08:30)';
+                placeholder = 'Monday 08:30';
+                break;
+            case 'monthly':
+                helpText = '格式: Day HH:MM (例如: 1 08:30，表示每月1号)';
+                placeholder = '1 08:30';
+                break;
+            case 'interval':
+                helpText = '间隔秒数 (例如: 3600 表示每小时)';
+                placeholder = '3600';
+                break;
+        }
+        
+        $('#schedule_value_help').text(helpText);
+        $('#schedule_value').attr('placeholder', placeholder);
+    });
+    
+    // 切换通知设置显示
+    $('#notify').on('change', function() {
+        if($(this).is(':checked')) {
+            $('#notification-settings').removeClass('d-none');
+            $('#webhook_url').attr('required', true);
+        } else {
+            $('#notification-settings').addClass('d-none');
+            $('#webhook_url').attr('required', false);
+        }
+    });
+    
+    // 测试钉钉通知
+    $('#test-dingtalk').on('click', function() {
+        var webhook_url = $('#webhook_url').val();
+        var secret = $('#secret').val();
+        
+        if (!webhook_url) {
+            $('#test-result').html('<span class="text-danger">请填写Webhook URL</span>');
+            return;
+        }
+        
+        // 显示加载状态
+        $('#test-result').html('<span class="text-muted"><i class="fas fa-spinner fa-spin"></i> 发送中...</span>');
+        
+        // 发送测试请求
+        $.ajax({
+            url: '{{ url_for("test_dingtalk") }}',
+            type: 'POST',
+            data: {
+                webhook_url: webhook_url,
+                secret: secret
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#test-result').html('<span class="text-success"><i class="fas fa-check-circle"></i> ' + response.message + '</span>');
+                } else {
+                    $('#test-result').html('<span class="text-danger"><i class="fas fa-times-circle"></i> ' + response.message + '</span>');
+                }
+            },
+            error: function() {
+                $('#test-result').html('<span class="text-danger"><i class="fas fa-times-circle"></i> 请求失败</span>');
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 

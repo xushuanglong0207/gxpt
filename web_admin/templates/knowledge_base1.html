@@ -1,0 +1,1930 @@
+{% extends "base.html" %}
+
+{% block title %}UGREEN NAS 知识库{% endblock %}
+
+{% block styles %}
+<link href="https://cdn.jsdelivr.net/npm/@toast-ui/editor@3.2.2/dist/toastui-editor.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.2/viewer.min.css" rel="stylesheet">
+<style>
+    .container-fluid {
+        height: calc(100vh - 56px);
+        padding: 1rem;
+    }
+    
+    .sidebar {
+        width: 300px;
+        height: 100%;
+        overflow-y: auto;
+        border-right: 1px solid #dee2e6;
+        padding-right: 1rem;
+    }
+    
+    .content {
+        flex: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        margin-left: 1rem;
+    }
+    
+    .toolbar {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 0.5rem;
+    }
+    
+    .editor-container {
+        flex: 1;
+        position: relative;
+    }
+    
+    #editor {
+        height: 100%;
+    }
+    
+    #outlinePanel {
+        width: 250px;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: white;
+        border-left: 1px solid #dee2e6;
+        padding: 1rem;
+        display: none;
+        flex-direction: column;
+        z-index: 100;
+    }
+    
+    .outline-title {
+        font-weight: bold;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .outline-content {
+        flex: 1;
+        overflow-y: auto;
+    }
+    
+    .outline-item {
+        cursor: pointer;
+        padding: 0.25rem 0;
+    }
+    
+    .outline-item:hover {
+        color: #0d6efd;
+    }
+    
+    .module-node {
+        margin: 0.25rem 0;
+    }
+    
+    .module-header {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        margin-bottom: 0.5rem;
+        background: #f8f9fa;
+    }
+    
+    .module-header:hover {
+        background: #e9ecef;
+    }
+
+    .module-header.active {
+        background: #e9ecef;
+        font-weight: bold;
+    }
+    
+    .module-toggle {
+        width: 20px;
+        text-align: center;
+        margin-right: 0.5rem;
+    }
+    
+    .module-title {
+        flex: 1;
+    }
+    
+    .module-count {
+        padding: 0.125rem 0.5rem;
+        background: #e9ecef;
+        border-radius: 1rem;
+        font-size: 0.875rem;
+    }
+    
+    .module-children {
+        margin-left: 1.5rem;
+    }
+    
+    .module-articles {
+        margin-left: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .article-item {
+        padding: 0.5rem;
+        cursor: pointer;
+        border-radius: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .article-item:hover {
+        background: #f8f9fa;
+    }
+    
+    /* 编辑器样式 - 强制显示工具栏 */
+    .toastui-editor-defaultUI {
+        border: 1px solid #aaa !important;
+        border-radius: 4px;
+        background: #fff !important;
+    }
+    
+    .toastui-editor-toolbar {
+        background: #f0f0f0 !important;
+        border-bottom: 1px solid #ccc !important;
+        padding: 8px !important;
+        display: flex !important;
+    }
+    
+    .toastui-editor-defaultUI-toolbar {
+        padding: 5px !important;
+        background: #f0f0f0 !important;
+    }
+    
+    .toastui-editor-toolbar-group {
+        margin-right: 8px !important;
+    }
+    
+    .toastui-editor-toolbar-item {
+        margin: 0 3px !important;
+        border: 1px solid #999 !important;
+        border-radius: 3px !important;
+        background-color: #f5f5f5 !important;
+        display: inline-block !important;
+        width: 32px !important;
+        height: 32px !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+    }
+    
+    .toastui-editor-toolbar-item:hover {
+        background-color: #fff !important;
+        border-color: #666 !important;
+    }
+    
+    .toastui-editor-toolbar-divider {
+        background-color: #aaa !important;
+        margin: 0 5px !important;
+        height: 20px !important;
+    }
+    
+    .toastui-editor-toolbar-icons {
+        background-image: url('https://uicdn.toast.com/editor/latest/toastui-editor.png') !important;
+        background-color: transparent !important;
+        border: none !important;
+        opacity: 1 !important;
+        width: 24px !important;
+        height: 24px !important;
+        margin: 4px !important;
+        display: inline-block !important;
+    }
+    
+    .toastui-editor-toolbar-icons:hover {
+        opacity: 1 !important;
+    }
+    
+    .toastui-editor-popup {
+        background-color: white !important;
+        border: 1px solid #ccc !important;
+        border-radius: 4px !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+    }
+    
+    .toastui-editor-contents {
+        padding: 15px !important;
+        background: #fff !important;
+    }
+    
+    .toastui-editor-contents img {
+        max-width: 100% !important;
+        cursor: pointer !important;
+        border-radius: 4px !important;
+        transition: transform 0.2s !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .toastui-editor-contents img:hover {
+        transform: scale(1.01) !important;
+    }
+    
+    /* 颜色选择器 */
+    .direct-color-picker {
+        position: absolute;
+        z-index: 3000;
+        background: #fff;
+        border: 1px solid #aaa;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        padding: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        width: 200px;
+    }
+    
+    .color-option {
+        width: 30px;
+        height: 30px;
+        margin: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: transform 0.1s, box-shadow 0.1s;
+    }
+    
+    .color-option:hover {
+        transform: scale(1.1);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        border-color: #999;
+    }
+    
+    /* 编辑器自定义按钮 */
+    .custom-editor-btn {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        border: 1px solid #999;
+        border-radius: 3px;
+        background-color: #f5f5f5;
+        margin: 0 3px;
+        cursor: pointer;
+        text-align: center;
+        line-height: 32px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .custom-editor-btn:hover {
+        background-color: #fff;
+        border-color: #666;
+    }
+    
+    /* 图片查看器样式 */
+    .viewer-container {
+        background-color: rgba(0, 0, 0, 0.9) !important;
+        z-index: 2000 !important;
+    }
+    
+    .viewer-toolbar {
+        background-color: rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    .viewer-toolbar > ul > li {
+        background-color: transparent !important;
+    }
+    
+    .viewer-toolbar > ul > li:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    .viewer-button {
+        color: #fff !important;
+    }
+    
+    .viewer-canvas {
+        background-color: transparent !important;
+    }
+    
+    /* 创建按钮样式 */
+    .create-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 1rem;
+    }
+    
+    .create-buttons .btn {
+        padding: 8px 16px;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    #toastContainer {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 2050;
+    }
+    
+    /* 新增模块操作按钮样式 */
+    .module-actions i {
+        margin-left: 5px;
+        cursor: pointer;
+        color: #555;
+    }
+    .module-actions i:hover {
+        color: #d00;
+    }
+
+    /* 工具栏保存按钮样式 */
+    .toolbar button.save-btn {
+        margin-right: 10px;
+    }
+
+    .module-header.dragging {
+        opacity: 0.5;
+        cursor: grabbing;
+    }
+    .module-header.dragging-active {
+        background-color: #e9ecef;
+    }
+    .module-header.drag-over {
+        border-top: 2px solid #0d6efd;
+    }
+    .module-header.drag-over-bottom {
+        border-bottom: 2px solid #0d6efd;
+    }
+    .dragging-in-progress * {
+        pointer-events: none;
+    }
+    .dragging-in-progress .module-header.dragging,
+    .dragging-in-progress .module-header.dragging * {
+        pointer-events: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex h-100">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="create-buttons">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModuleModal">
+                    <i class="fas fa-folder-plus"></i>
+                    创建模块
+                </button>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createArticleModal">
+                    <i class="fas fa-file-plus"></i>
+                    创建文章
+                </button>
+            </div>
+            <div id="moduleTree"></div>
+        </div>
+        
+        <!-- 内容区 -->
+        <div class="content">
+            <div class="toolbar"></div>
+            <div class="editor-container">
+                <textarea id="editor"></textarea>
+                <div id="outlinePanel">
+                    <div class="outline-title">文档大纲</div>
+                    <div id="outlineContent" class="outline-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 创建模块模态框 -->
+<div class="modal fade" id="createModuleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">创建新模块</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createModuleForm">
+                    <div class="mb-3">
+                        <label for="moduleName" class="form-label">模块名称</label>
+                        <input type="text" class="form-control" id="moduleName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="parentModule" class="form-label">父级模块</label>
+                        <select class="form-select" id="parentModule">
+                            <option value="">无</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="moduleDescription" class="form-label">模块描述</label>
+                        <textarea class="form-control" id="moduleDescription" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="createModule()">创建</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 创建文章模态框 -->
+<div class="modal fade" id="createArticleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">创建新文章</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createArticleForm">
+                    <div class="mb-3">
+                        <label for="articleTitle" class="form-label">文章标题</label>
+                        <input type="text" class="form-control" id="articleTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="moduleSelect" class="form-label">所属模块</label>
+                        <select class="form-select" id="moduleSelect" required>
+                            <option value="">请选择模块</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="createArticle()">创建</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast容器 -->
+<div id="toastContainer"></div>
+{% endblock %}
+
+{% block scripts %}
+<!-- 基础依赖 -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-ui@1.13.2/dist/jquery-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.2/viewer.min.js"></script>
+
+<!-- 引入TinyMCE编辑器 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.7.0/tinymce.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.7.0/langs/zh_CN.js"></script>
+
+<script>
+// 添加关闭Toast的函数
+function closeToast(toastId) {
+    const toast = document.getElementById(toastId);
+    if (toast) {
+        toast.remove();
+    }
+}
+
+// 添加 debounce 函数
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    }
+}
+
+// 确保在所有依赖加载完成后再执行初始化
+$(function() {
+    console.log('页面加载完成，准备初始化...');
+    
+    // 显示加载提示
+    const loadingId = 'loading-app-' + Date.now();
+    showInfo('正在初始化应用...', loadingId);
+    
+    // 优化初始化顺序
+    setTimeout(() => {
+        // 初始化编辑器
+        if (!initEditor()) {
+            console.error('编辑器初始化失败');
+            closeToast(loadingId);
+            return;
+        }
+        
+        // 加载模块列表
+        loadModules().finally(() => {
+            // 关闭加载提示
+            closeToast(loadingId);
+        });
+    }, 100);
+});
+
+let editor = null;
+let currentArticleId = null;
+let isEditMode = false;
+let createArticleModal = null;
+
+// 初始化编辑器
+function initEditor() {
+    console.log('初始化TinyMCE编辑器...');
+    try {
+        // 1. 确保按钮仅在外部显示
+        const toolbar = document.querySelector('.toolbar');
+        if (toolbar) {
+            // 清除之前的按钮
+            toolbar.innerHTML = '';
+            
+            // 添加保存按钮
+            const saveButton = document.createElement('button');
+            saveButton.className = 'btn btn-primary save-btn';
+            saveButton.textContent = '保存文档';
+            saveButton.onclick = saveContent;
+            toolbar.appendChild(saveButton);
+        }
+        
+        // 2. 内联中文语言包
+        tinymce.addI18n('zh_CN', {
+            "Bold": "粗体",
+            "Italic": "斜体",
+            "Underline": "下划线",
+            "Link": "链接",
+            "Image": "图片",
+            "Table": "表格",
+            "Heading 1": "标题1",
+            "Heading 2": "标题2",
+            "Heading 3": "标题3",
+            "Paragraph": "段落",
+            "Cut": "剪切",
+            "Copy": "复制",
+            "Paste": "粘贴",
+            "Undo": "撤销",
+            "Redo": "重做",
+            "Font size": "字体大小",
+            "Font family": "字体",
+            "Formats": "格式",
+            "Align left": "左对齐",
+            "Align center": "居中对齐",
+            "Align right": "右对齐",
+            "Justify": "两端对齐",
+            "Bullet list": "无序列表",
+            "Numbered list": "有序列表",
+            "Decrease indent": "减少缩进",
+            "Increase indent": "增加缩进",
+            "Code": "代码",
+            "Source code": "源代码",
+            "Insert/edit image": "插入/编辑图片",
+            "Alternative description": "替代文本",
+            "Upload": "上传",
+            "Save": "保存",
+            "Cancel": "取消",
+            "Insert": "插入",
+            "Close": "关闭",
+            "Edit": "编辑",
+            "Delete": "删除",
+            "Duplicate": "复制",
+            "Orientation": "方向",
+            "Dimensions": "尺寸",
+            "Uploading your image": "正在上传图片",
+            "Insert image": "插入图片",
+            "File": "文件",
+            "Edit": "编辑",
+            "View": "视图",
+            "Format": "格式",
+            "Table": "表格",
+            "Tools": "工具",
+            "Help": "帮助",
+            "Foreground color": "前景色",
+            "Background color": "背景色"
+        });
+        
+        // 3. 优化初始化配置
+        tinymce.init({
+            selector: '#editor',
+            plugins: 'image table link code autolink lists media',
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image media | forecolor backcolor | code',
+            language: 'zh_CN',
+            menubar: 'file edit insert format tools help',
+            images_upload_url: '/api/knowledge/upload-image',
+            automatic_uploads: false, // 禁用自动上传提示
+            paste_data_images: false, // 先禁用粘贴图片自动上传
+            image_title: true,
+            file_picker_types: 'image',
+            height: '100%',
+            branding: false,
+            skin: 'oxide',
+            content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; }',
+            setup: function(ed) {
+                // 保存全局变量
+                window.tinyEditor = ed;
+                
+                ed.on('init', function() {
+                    console.log('TinyMCE编辑器初始化完成');
+                    editor = ed;
+                    // 初始化后立即隐藏不必要的UI元素，提高性能
+                    setTimeout(() => {
+                        const editorContainer = document.querySelector('.tox-tinymce');
+                        if (editorContainer) {
+                            editorContainer.style.visibility = 'visible';
+                        }
+                    }, 100);
+                });
+                
+                // 改进实时保存
+                let saveTimeout = null;
+                const saveContent = debounce(function() {
+                    if (editor && currentArticleId) {
+                        _saveContent();
+                    }
+                }, 3000); // 增加到3秒以减少保存频率，提高性能
+                
+                // 每分钟保存一次
+                function startPeriodicSave() {
+                    saveTimeout = setInterval(function() {
+                        if (editor && currentArticleId) {
+                            _saveContent();
+                        }
+                    }, 120000); // 增加到2分钟，降低服务器负载
+                }
+                
+                function stopPeriodicSave() {
+                    if (saveTimeout) {
+                        clearInterval(saveTimeout);
+                        saveTimeout = null;
+                    }
+                }
+                
+                // 内容变化时触发实时保存
+                ed.on('change', function() {
+                    saveContent();
+                });
+                
+                // 当编辑器获得焦点时，启动定时保存
+                ed.on('focus', function() {
+                    if (!saveTimeout) {
+                        startPeriodicSave();
+                    }
+                });
+                
+                // 当编辑器失去焦点时，保存
+                ed.on('blur', function() {
+                    stopPeriodicSave();
+                    if (editor && currentArticleId) {
+                        _saveContent();
+                    }
+                });
+                
+                // 为粘贴图片添加事件监听，优化粘贴处理
+                ed.on('paste', function(e) {
+                    console.log('检测到粘贴操作');
+                });
+                
+                // 清理
+                ed.on('remove', function() {
+                    stopPeriodicSave();
+                });
+            },
+            // 自定义上传处理函数，不显示提示
+            images_upload_handler: function (blobInfo, success, failure) {
+                try {
+                    var formData = new FormData();
+                    formData.append('image', blobInfo.blob(), blobInfo.filename());
+                    
+                    fetch('/api/knowledge/upload-image', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('上传失败: ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (!data || !data.success || !data.url) {
+                            throw new Error('上传失败: 无效响应');
+                        }
+                        success(data.url);
+                    })
+                    .catch(err => {
+                        console.error('图片上传错误:', err);
+                        failure('上传失败: ' + (err.message || '未知错误'));
+                    });
+                } catch (ex) {
+                    console.error('图片上传处理错误:', ex);
+                    failure('上传失败: ' + ex.message);
+                }
+            },
+            // 图片配置优化
+            image_prepend_url: '',
+            convert_urls: false,
+            // 优化粘贴图片配置，防止过度处理
+            paste_as_text: false,
+            paste_data_images: true,
+            paste_enable_default_filters: true,
+            smart_paste: true,
+            paste_webkit_styles: 'none'
+        });
+        
+        return true;
+    } catch (error) {
+        console.error('编辑器初始化失败:', error);
+        showError(error.message);
+        return false;
+    }
+}
+
+// 实际保存内容的函数实现
+function _saveContent() {
+    if (!editor && !window.tinyEditor) {
+        showError('编辑器未初始化');
+        return Promise.reject(new Error('编辑器未初始化'));
+    }
+    
+    if (!currentArticleId) {
+        showError('未选择文章');
+        return Promise.reject(new Error('未选择文章'));
+    }
+    
+    // 优先使用全局editor变量，如果不存在则使用window.tinyEditor
+    const ed = editor || window.tinyEditor;
+    const content = ed.getContent();
+    
+    // 显示保存中提示
+    const savingId = 'saving-content-' + Date.now();
+    showInfo('正在保存内容...', savingId);
+    
+    return fetch(`/api/knowledge/article/${currentArticleId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            content: content
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`保存失败: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        // 关闭保存提示
+        closeToast(savingId);
+        
+        if (data.success) {
+            showSuccess('保存成功');
+            return data;
+        } else {
+            throw new Error(data.error || '保存失败');
+        }
+    })
+    .catch(error => {
+        // 关闭保存提示
+        closeToast(savingId);
+        
+        console.error('保存失败:', error);
+        showError(error.message);
+        throw error;
+    });
+}
+
+// 暴露给外部的保存函数，用于按钮点击
+function saveContent() {
+    return _saveContent().catch(err => console.error('保存内容失败:', err));
+}
+
+// 加载模块内容
+async function loadModule(moduleId) {
+    console.log('正在加载模块:', moduleId);
+    try {
+        if (!moduleId) {
+            throw new Error('模块ID不能为空');
+        }
+        
+        // 检查该模块是否已经处于激活状态
+        const currentHeader = document.querySelector(`.module-header[data-id="${moduleId}"]`);
+        if (currentHeader && currentHeader.classList.contains('active')) {
+            // 如果已激活，则折叠/展开文章列表
+            const articlesList = document.querySelector(`.module-articles[data-id="${moduleId}"]`);
+            if (articlesList) {
+                if (articlesList.style.display === 'none') {
+                    articlesList.style.display = 'block';
+                } else {
+                    articlesList.style.display = 'none';
+                }
+                return; // 不再重新加载模块
+            }
+        }
+        
+        const response = await fetch(`/api/knowledge/module/${moduleId}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`加载模块失败: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('模块数据:', data);
+        
+        if (!data.module) {
+            throw new Error('无效的模块数据');
+        }
+        
+        // 移除所有已显示的文章列表
+        document.querySelectorAll('.module-articles').forEach(el => el.remove());
+        
+        // 更新当前模块状态
+        document.querySelectorAll('.module-header').forEach(header => {
+            header.classList.remove('active');
+        });
+        
+        if (currentHeader) {
+            currentHeader.classList.add('active');
+            
+            // 显示模块下的文章列表
+            if (data.module.articles && data.module.articles.length > 0) {
+                const articlesList = document.createElement('div');
+                articlesList.className = 'module-articles';
+                articlesList.dataset.id = moduleId;
+                
+                data.module.articles.forEach(article => {
+                    const articleItem = document.createElement('div');
+                    articleItem.className = 'article-item';
+                    articleItem.innerHTML = `<i class="fas fa-file-alt me-2"></i>${article.title}`;
+                    articleItem.onclick = () => loadArticle(article.id);
+                    articlesList.appendChild(articleItem);
+                });
+                
+                // 添加到模块后面
+                currentHeader.parentNode.insertBefore(articlesList, currentHeader.nextSibling);
+            }
+        }
+        
+        // 如果模块有文章，加载第一篇文章
+        if (data.module.articles && data.module.articles.length > 0) {
+            await loadArticle(data.module.articles[0].id);
+        } else {
+            if (tinymce.get('editor')) {
+                tinymce.get('editor').setContent(`# ${data.module.name}\n\n${data.module.description || ''}`);
+            } else {
+                console.error('编辑器未初始化');
+                showError('编辑器未初始化');
+            }
+        }
+        
+        showSuccess('模块加载成功');
+    } catch (error) {
+        console.error('加载模块失败:', error);
+        showError(error.message);
+    }
+}
+
+// 加载文章内容 - 优化图片处理
+async function loadArticle(articleId) {
+    console.log('加载文章:', articleId);
+    try {
+        if (!articleId) {
+            throw new Error('文章ID不能为空');
+        }
+        
+        // 保存当前文章ID
+        currentArticleId = articleId;
+        
+        // 显示加载提示
+        const loadingId = 'loading-article-' + Date.now();
+        showInfo('正在加载文章...', loadingId);
+        
+        const response = await fetch(`/api/knowledge/article/${articleId}`);
+        
+        // 关闭加载提示
+        closeToast(loadingId);
+        
+        if (!response.ok) {
+            throw new Error('加载文章失败: ' + response.status);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success && data.content) {
+            // 预处理内容，优化图片
+            let content = data.content;
+            
+            // 增加图片懒加载属性
+            content = content.replace(/<img /g, '<img loading="lazy" decoding="async" ');
+            
+            // 确保编辑器已初始化
+            const setEditorContent = (content) => {
+                // 设置内容前禁用事件触发
+                const ed = window.tinyEditor || editor || tinymce.get('editor');
+                if (ed) {
+                    // 临时禁用onChange事件触发，防止不必要的保存
+                    const events = ed.hasOwnProperty('handlers') ? ed.handlers : {};
+                    const changeHandlers = events.change ? [...events.change] : [];
+                    if (events.change) events.change = [];
+                    
+                    // 设置内容
+                    ed.setContent(content);
+                    
+                    // 恢复事件处理
+                    setTimeout(() => {
+                        if (events.change) events.change = changeHandlers;
+                    }, 500);
+                    
+                    showSuccess('文章加载成功');
+                } else {
+                    throw new Error('编辑器未初始化');
+                }
+            };
+            
+            if (window.tinyEditor) {
+                setEditorContent(content);
+            } else if (editor) {
+                setEditorContent(content);
+            } else {
+                // 如果编辑器尚未初始化，等待并重试
+                setTimeout(() => {
+                    const ed = tinymce.get('editor');
+                    if (ed) {
+                        setEditorContent(content);
+                    } else {
+                        throw new Error('编辑器未就绪，请刷新页面重试');
+                    }
+                }, 500);
+            }
+        } else {
+            throw new Error(data.error || '加载文章失败');
+        }
+    } catch (error) {
+        console.error('加载文章失败:', error);
+        showError('加载文章失败: ' + error.message);
+    }
+}
+
+// 创建文章
+async function createArticle() {
+    console.log('正在创建文章...');
+    try {
+        const title = document.getElementById('articleTitle').value.trim();
+        const moduleId = document.getElementById('moduleSelect').value;
+        
+        if (!title || !moduleId) {
+            throw new Error('请填写完整的文章信息');
+        }
+        
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('module', moduleId);
+        formData.append('content', `# ${title}\n\n请在这里编写文章内容`);
+        
+        const response = await fetch('/api/knowledge/save', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`创建文章失败: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('创建文章响应:', data);
+        
+        if (data.success) {
+            // 关闭模态框
+            const modal = bootstrap.Modal.getInstance(document.getElementById('createArticleModal'));
+            if (modal) {
+                modal.hide();
+            }
+            
+            // 移除遮罩
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            
+            // 重新加载模块列表
+            await loadModules();
+            
+            // 加载新创建的文章
+            if (data.article && data.article.id) {
+                await loadArticle(data.article.id);
+            }
+            
+            showSuccess('文章创建成功');
+        } else {
+            throw new Error(data.error || '创建文章失败');
+        }
+    } catch (error) {
+        console.error('创建文章失败:', error);
+        showError(error.message);
+    }
+}
+
+// 创建新模块
+async function createModule() {
+    console.log('创建新模块...');
+    try {
+        const name = document.getElementById('moduleName').value.trim();
+        const parentId = document.getElementById('parentModule').value.trim();
+        const description = document.getElementById('moduleDescription').value.trim();
+        
+        if (!name) {
+            showError('请输入模块名称');
+            return;
+        }
+        
+        const response = await fetch('/api/knowledge/save-module', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                name: name,
+                parent_id: parentId || null,
+                description: description
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // 关闭模态框
+            const modal = bootstrap.Modal.getInstance(document.getElementById('createModuleModal'));
+            if (modal) {
+                modal.hide();
+            }
+            
+            // 移除遮罩
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            
+            // 重新加载模块列表
+            await loadModules();
+            
+            document.getElementById('createModuleForm').reset();
+            showSuccess('模块创建成功');
+        } else {
+            throw new Error(data.error || '创建模块失败');
+        }
+    } catch (error) {
+        console.error('创建模块失败:', error);
+        showError('创建模块失败: ' + error.message);
+    }
+}
+
+// 加载模块列表
+async function loadModules() {
+    console.log('加载模块列表...');
+    try {
+        const response = await fetch('/api/knowledge/modules');
+        console.log('模块列表API响应状态:', response.status);
+        
+        if (!response.ok) {
+            throw new Error('加载模块列表失败: ' + response.status);
+        }
+        
+        const data = await response.json();
+        console.log('模块列表数据:', data);
+        
+        // 检查数据格式
+        if (!data || !Array.isArray(data.modules)) {
+            throw new Error('无效的模块数据格式');
+        }
+        
+        updateModuleTree(data.modules);
+        updateModuleSelect(data.modules);
+        showSuccess('模块列表加载成功');
+        
+    } catch (error) {
+        console.error('加载模块列表失败:', error);
+        showError('加载模块列表失败: ' + error.message);
+    }
+}
+
+// 更新模块树
+function updateModuleTree(modules) {
+    console.log('更新模块树...');
+    try {
+        const tree = document.getElementById('moduleTree');
+        if (!tree) {
+            throw new Error('找不到模块树容器');
+        }
+        
+        // 清空树 - 使用更高效的方式
+        while (tree.firstChild) {
+            tree.removeChild(tree.firstChild);
+        }
+        
+        // 使用 DocumentFragment 提高性能
+        const fragment = document.createDocumentFragment();
+        
+        // 全局拖拽状态
+        let draggedElement = null;
+        
+        // 验证模块数据格式，防止无效模块导致问题
+        if (!Array.isArray(modules)) {
+            console.error('无效的模块列表格式:', modules);
+            showError('模块列表格式错误');
+            return;
+        }
+        
+        // 预处理数据，确保所有模块都有有效的ID
+        function preprocessModules(modulesList) {
+            if (!Array.isArray(modulesList)) return [];
+            
+            return modulesList.map(module => {
+                if (!module) return null;
+                
+                // 确保模块有ID
+                if (!module.id) {
+                    module.id = 'temp_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+                    console.warn('模块没有ID，已生成临时ID:', module.id);
+                }
+                
+                // 递归处理子模块
+                if (module.children && Array.isArray(module.children)) {
+                    module.children = preprocessModules(module.children);
+                }
+                
+                return module;
+            }).filter(Boolean); // 移除无效模块
+        }
+        
+        // 预处理模块数据
+        const processedModules = preprocessModules(modules);
+        
+        // 减少不必要的日志输出
+        function createModuleNode(module) {
+            if (!module || !module.name) {
+                return null;
+            }
+            
+            const node = document.createElement('div');
+            node.className = 'module-node';
+            
+            const header = document.createElement('div');
+            header.className = 'module-header';
+            header.dataset.id = module.id;
+            header.dataset.name = module.name;
+            
+            // 分离点击和拖拽事件，避免冲突
+            let isDragging = false;
+            let dragStartTime = 0;
+            
+            // 点击事件 - 使用事件委托减少事件监听器数量
+            header.addEventListener('click', function(e) {
+                // 只有当没有拖拽或点击时间很短时处理点击事件
+                const now = Date.now();
+                if (!isDragging || (now - dragStartTime < 200)) {
+                    loadModule(module.id);
+                }
+            });
+            
+            // 拖拽相关事件
+            header.setAttribute('draggable', true);
+            
+            header.addEventListener('dragstart', function(e) {
+                isDragging = true;
+                dragStartTime = Date.now();
+                draggedElement = header;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', module.id);
+                
+                // 添加拖拽样式
+                header.classList.add('dragging');
+                document.body.classList.add('dragging-in-progress');
+                
+                // 延迟添加active类，解决Firefox拖拽问题
+                setTimeout(() => {
+                    header.classList.add('dragging-active');
+                }, 0);
+                
+                // 清除所有已有的drag-over状态
+                document.querySelectorAll('.drag-over, .drag-over-bottom').forEach(el => {
+                    el.classList.remove('drag-over', 'drag-over-bottom');
+                });
+            });
+            
+            header.addEventListener('dragend', function(e) {
+                setTimeout(() => {
+                    isDragging = false;
+                }, 100);
+                draggedElement = null;
+                
+                // 移除拖拽样式
+                header.classList.remove('dragging', 'dragging-active');
+                document.body.classList.remove('dragging-in-progress');
+                
+                // 清除所有已有的drag-over状态
+                document.querySelectorAll('.drag-over, .drag-over-bottom').forEach(el => {
+                    el.classList.remove('drag-over', 'drag-over-bottom');
+                });
+            });
+            
+            header.addEventListener('dragover', function(e) {
+                if (draggedElement && draggedElement !== header) {
+                    e.preventDefault(); // 允许放置
+                    e.dataTransfer.dropEffect = 'move';
+                    
+                    const rect = header.getBoundingClientRect();
+                    const threshold = rect.height / 2;
+                    const mouseY = e.clientY - rect.top;
+                    
+                    // 移除已有的状态
+                    header.classList.remove('drag-over', 'drag-over-bottom');
+                    
+                    // 根据鼠标位置添加不同的视觉反馈
+                    if (mouseY < threshold) {
+                        header.classList.add('drag-over'); // 上部，显示顶部边框
+                    } else {
+                        header.classList.add('drag-over-bottom'); // 下部，显示底部边框
+                    }
+                }
+            });
+            
+            header.addEventListener('dragleave', function(e) {
+                header.classList.remove('drag-over', 'drag-over-bottom');
+            });
+            
+            header.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                header.classList.remove('drag-over', 'drag-over-bottom');
+                
+                const draggedId = e.dataTransfer.getData('text/plain');
+                if (draggedId && draggedId !== module.id) {
+                    // 获取拖拽的垂直方向
+                    const rect = header.getBoundingClientRect();
+                    const dropPos = e.clientY - rect.top;
+                    const direction = dropPos < (rect.height / 2) ? 'up' : 'down';
+                    
+                    // 显示处理中
+                    showInfo(`正在调整模块排序...`, 'dragging-update-' + Date.now());
+                    
+                    // 调用排序API
+                    moveModule(draggedId, module.id, direction);
+                }
+            });
+            
+            const toggle = document.createElement('span');
+            toggle.className = 'module-toggle';
+            toggle.innerHTML = module.children && module.children.length ? 
+                '<i class="fas fa-caret-right"></i>' : 
+                '<i class="fas fa-file"></i>';
+            header.appendChild(toggle);
+            
+            const title = document.createElement('span');
+            title.className = 'module-title';
+            title.textContent = module.name;
+            header.appendChild(title);
+            
+            const count = document.createElement('span');
+            count.className = 'module-count';
+            count.textContent = module.count || 0;
+            header.appendChild(count);
+            
+            // 新增操作按钮
+            const actions = document.createElement('span');
+            actions.className = 'module-actions';
+            actions.innerHTML = '<i class="fas fa-trash-alt" title="删除" onclick="event.stopPropagation(); deleteModule(\'' + module.id + '\')"></i> ' +
+                                '<i class="fas fa-arrow-up" title="上移" onclick="event.stopPropagation(); moveModule(\'' + module.id + '\', null, \'up\')"></i> ' +
+                                '<i class="fas fa-arrow-down" title="下移" onclick="event.stopPropagation(); moveModule(\'' + module.id + '\', null, \'down\')"></i>';
+            header.appendChild(actions);
+            
+            node.appendChild(header);
+            
+            if (module.children && Array.isArray(module.children) && module.children.length > 0) {
+                const children = document.createElement('div');
+                children.className = 'module-children';
+                children.style.display = 'none';
+                
+                module.children.forEach(child => {
+                    const childNode = createModuleNode(child);
+                    if (childNode) {
+                        children.appendChild(childNode);
+                    }
+                });
+                
+                if (children.children.length > 0) {
+                    toggle.onclick = (e) => {
+                        e.stopPropagation();
+                        const isExpanded = children.style.display !== 'none';
+                        children.style.display = isExpanded ? 'none' : 'block';
+                        toggle.innerHTML = isExpanded ? 
+                            '<i class="fas fa-caret-right"></i>' : 
+                            '<i class="fas fa-caret-down"></i>';
+                    };
+                    node.appendChild(children);
+                }
+            }
+            
+            return node;
+        }
+        
+        processedModules.forEach(module => {
+            const node = createModuleNode(module);
+            if (node) {
+                fragment.appendChild(node);
+            }
+        });
+        
+        tree.appendChild(fragment);
+    } catch (error) {
+        console.error('更新模块树失败:', error);
+        showError('更新模块树失败: ' + error.message);
+    }
+}
+
+// 更新模块选择器
+function updateModuleSelect(modules) {
+    console.log('更新模块选择器...');
+    try {
+        const select = document.getElementById('moduleSelect');
+        if (!select) {
+            throw new Error('找不到模块选择器');
+        }
+        
+        select.innerHTML = '<option value="">请选择模块</option>';
+        
+        function addModuleOptions(modules, level = 0) {
+            if (!Array.isArray(modules)) {
+                console.warn('无效的模块列表:', modules);
+                return;
+            }
+            
+            modules.forEach(module => {
+                // 检查模块是否有效
+                if (!module || !module.name) {
+                    console.warn('无效的模块，跳过');
+                    return;
+                }
+                
+                // 检查ID是否为空，如果为空则生成临时ID并跳过
+                if (!module.id) {
+                    console.warn('跳过无效的模块(ID为空):', module.name);
+                    // 为无ID的模块生成一个临时ID，但不添加到选择器中
+                    module.id = 'temp_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+                    return;
+                }
+                
+                const option = document.createElement('option');
+                option.value = module.id;
+                option.textContent = '  '.repeat(level) + module.name;
+                select.appendChild(option);
+                
+                if (module.children && Array.isArray(module.children) && module.children.length > 0) {
+                    addModuleOptions(module.children, level + 1);
+                }
+            });
+        }
+        
+        addModuleOptions(modules);
+        console.log('模块选择器更新成功');
+    } catch (error) {
+        console.error('更新模块选择器失败:', error);
+        showError('更新模块选择器失败: ' + error.message);
+    }
+}
+
+// 显示成功消息
+function showSuccess(message) {
+    toastr.success(message);
+}
+
+// 显示错误消息
+function showError(message) {
+    toastr.error(message);
+}
+
+// 显示提示信息
+function showInfo(message) {
+    toastr.info(message);
+}
+
+// 新增模块操作函数：删除模块
+function deleteModule(moduleId) {
+    if (!confirm('确定删除该模块吗？子模块也会被删除。')) return;
+    
+    // 显示处理中提示
+    const loadingId = 'deleting-module-' + Date.now();
+    showInfo('正在删除模块...', loadingId);
+    
+    // 获取要删除的DOM节点
+    const moduleNode = document.querySelector(`.module-header[data-id="${moduleId}"]`)?.parentNode;
+    
+    if (!moduleNode) {
+        closeToast(loadingId);
+        showError('找不到要删除的模块');
+        return;
+    }
+    
+    // 调用后端API
+    fetch('/api/knowledge/delete-module', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            module_id: moduleId
+        })
+    })
+    .then(response => {
+        closeToast(loadingId);
+        
+        if (response.ok) {
+            return response.json().then(data => {
+                if (data.success) {
+                    showSuccess('模块删除成功');
+                    // 重新加载模块树，确保显示最新状态
+                    return loadModules();
+                } else {
+                    throw new Error(data.error || '模块删除失败');
+                }
+            });
+        } else {
+            throw new Error(`删除模块请求失败: ${response.status}`);
+        }
+    })
+    .catch(error => {
+        console.error('删除模块失败:', error);
+        showError('删除模块失败: ' + error.message);
+    });
+}
+
+// 修改模块移动函数，确保 API 调用正确
+function moveModule(draggedId, targetId, direction) {
+    // 显示处理中提示
+    const loadingId = 'moving-module-' + Date.now();
+    showInfo('正在移动模块...', loadingId);
+    
+    // 预先获取DOM元素
+    const moduleNode = document.querySelector(`.module-header[data-id="${draggedId}"]`)?.parentNode;
+    
+    if (!moduleNode) {
+        closeToast(loadingId);
+        showError('找不到要移动的模块');
+        return;
+    }
+    
+    // 准备请求数据
+    const requestData = {
+        module_id: draggedId,
+        target_id: targetId,
+        direction: direction
+    };
+    
+    console.log('移动模块请求数据:', requestData);
+    
+    // 确保URL以斜杠开始 - 使用绝对路径
+    fetch('/api/knowledge/move-module', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        console.log('移动模块响应状态:', response.status);
+        closeToast(loadingId);
+        
+        if (response.ok) {
+            return response.json().then(data => {
+                if (data.success) {
+                    showSuccess('模块移动成功');
+                    // 重新加载模块树，确保显示最新状态
+                    location.reload(); // 确保页面刷新，以反映最新模块结构
+                } else {
+                    throw new Error(data.error || '模块移动失败');
+                }
+            });
+        } else {
+            throw new Error(`移动模块请求失败: ${response.status}`);
+        }
+    })
+    .catch(error => {
+        console.error('移动模块失败:', error);
+        showError('移动模块失败: ' + error.message);
+    });
+}
+
+// 修改报告查看函数，确保 URL 格式正确
+function viewReport(reportId) {
+    if (!reportId) {
+        showError('报告ID不能为空');
+        return;
+    }
+    
+    // 显示加载提示
+    const loadingId = 'loading-report-' + Date.now();
+    showInfo('正在加载报告...', loadingId);
+    
+    // 直接使用正确的URL格式，不再尝试其他格式
+    const reportUrl = `/reports/view/${reportId}`;
+    
+    // 检查报告是否存在
+    fetch(reportUrl, {
+        method: 'HEAD'
+    })
+    .then(response => {
+        closeToast(loadingId);
+        
+        if (response.status === 404) {
+            showError('报告页面不存在');
+        } else {
+            // 使用正确的 URL 格式
+            window.location.href = reportUrl;
+        }
+    })
+    .catch(error => {
+        closeToast(loadingId);
+        console.error('查看报告失败:', error);
+        showError('查看报告失败: ' + error.message);
+    });
+}
+
+// 在页面加载时，获取所有模块用于父级模块选择
+document.addEventListener('DOMContentLoaded', function() {
+    // 获取父级模块选择框
+    const parentModuleSelect = document.getElementById('parentModule');
+    if (parentModuleSelect) {
+        // 加载所有模块
+        fetch('/api/knowledge/modules')
+        .then(response => response.json())
+        .then(data => {
+            // 清空现有选项
+            parentModuleSelect.innerHTML = '<option value="">无 (顶级模块)</option>';
+            
+            // 添加所有一级模块作为选项
+            if (data.modules && Array.isArray(data.modules)) {
+                data.modules.forEach(module => {
+                    const option = document.createElement('option');
+                    option.value = module.id;
+                    option.textContent = module.name;
+                    parentModuleSelect.appendChild(option);
+                });
+            }
+        })
+        .catch(error => console.error('加载父级模块选项失败:', error));
+    }
+    
+    // 初始化文档标题树状结构
+    initializeDocumentTrees();
+});
+
+// 初始化文档目录树功能
+function initializeDocumentTrees() {
+    // 查找所有文章内容区域
+    document.querySelectorAll('.article-content').forEach(contentElement => {
+        // 查找所有标题元素
+        const headings = contentElement.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        if (headings.length > 0) {
+            // 创建目录树容器
+            const tocContainer = document.createElement('div');
+            tocContainer.className = 'document-toc';
+            tocContainer.innerHTML = '<h6>目录</h6><ul class="toc-list"></ul>';
+            const tocList = tocContainer.querySelector('.toc-list');
+            
+            // 为每个标题创建目录项
+            headings.forEach((heading, index) => {
+                // 为标题添加ID，用于锚点链接
+                const headingId = 'heading-' + index;
+                heading.id = headingId;
+                
+                // 创建目录项
+                const listItem = document.createElement('li');
+                listItem.className = 'toc-item toc-level-' + heading.tagName.toLowerCase();
+                
+                const link = document.createElement('a');
+                link.href = '#' + headingId;
+                link.textContent = heading.textContent;
+                link.className = 'toc-link';
+                
+                // 添加展开/折叠功能
+                const toggleBtn = document.createElement('span');
+                toggleBtn.className = 'toc-toggle';
+                toggleBtn.innerHTML = '▼';
+                toggleBtn.onclick = function(e) {
+                    e.preventDefault();
+                    const nextLevel = this.parentElement.nextElementSibling;
+                    if (nextLevel && nextLevel.tagName === 'UL') {
+                        if (nextLevel.style.display === 'none') {
+                            nextLevel.style.display = 'block';
+                            this.innerHTML = '▼';
+                        } else {
+                            nextLevel.style.display = 'none';
+                            this.innerHTML = '▶';
+                        }
+                    }
+                };
+                
+                listItem.appendChild(toggleBtn);
+                listItem.appendChild(link);
+                tocList.appendChild(listItem);
+                
+                // 使标题可点击以展开/折叠其下内容
+                heading.style.cursor = 'pointer';
+                heading.onclick = function() {
+                    // 查找此标题到下一个相同或更高级别标题之间的所有内容
+                    let current = this.nextElementSibling;
+                    const elements = [];
+                    while (current && 
+                           (current.tagName !== this.tagName || 
+                            parseInt(current.tagName[1]) > parseInt(this.tagName[1]))) {
+                        elements.push(current);
+                        current = current.nextElementSibling;
+                    }
+                    
+                    // 切换显示/隐藏状态
+                    const isVisible = elements.length > 0 && 
+                                     elements[0].style.display !== 'none';
+                    elements.forEach(el => {
+                        el.style.display = isVisible ? 'none' : '';
+                    });
+                };
+            });
+            
+            // 将目录树插入到内容区域前面
+            contentElement.parentNode.insertBefore(tocContainer, contentElement);
+        }
+    });
+}
+
+// 添加内存和性能优化函数 - 加强版
+function optimizePagePerformance() {
+    // 减少内存使用的图片优化
+    function optimizeImages() {
+        const images = document.querySelectorAll('img');
+        let processedCount = 0;
+        
+        // 分批处理图片，避免一次性处理过多图片导致性能问题
+        function processNextBatch(index, batchSize) {
+            const endIndex = Math.min(index + batchSize, images.length);
+            
+            for (let i = index; i < endIndex; i++) {
+                const img = images[i];
+                // 增加懒加载和异步解码属性
+                if (!img.hasAttribute('loading')) {
+                    img.setAttribute('loading', 'lazy');
+                }
+                if (!img.hasAttribute('decoding')) {
+                    img.setAttribute('decoding', 'async');
+                }
+                
+                // 图片加载完成后释放内存
+                img.addEventListener('load', function() {
+                    setTimeout(() => {
+                        // 尝试释放图片资源，减少内存占用
+                        img.src = img.src; // 触发浏览器重新评估图片资源
+                    }, 1000);
+                }, { once: true });
+                
+                processedCount++;
+            }
+            
+            // 如果还有更多图片要处理，安排下一批处理
+            if (endIndex < images.length) {
+                setTimeout(() => {
+                    processNextBatch(endIndex, batchSize);
+                }, 100);
+            }
+        }
+        
+        // 开始处理，每批处理10张图片
+        processNextBatch(0, 10);
+        
+        return processedCount;
+    }
+    
+    // 初始处理
+    optimizeImages();
+    
+    // 监听DOM变化，优化新添加的图片
+    const observer = new MutationObserver(function(mutations) {
+        let hasNewImages = false;
+        
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1) { // 元素节点
+                        if (node.tagName === 'IMG') {
+                            hasNewImages = true;
+                        } else if (node.querySelectorAll) {
+                            const images = node.querySelectorAll('img');
+                            if (images.length > 0) {
+                                hasNewImages = true;
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        
+        if (hasNewImages) {
+            optimizeImages();
+        }
+    });
+    
+    // 监听整个文档的变化
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+    
+    // 检测和清理内存泄漏
+    const cleanupInterval = setInterval(() => {
+        // 清理不再需要的DOM引用
+        if (window.gc) {
+            try {
+                window.gc(); // 在某些浏览器中手动触发垃圾收集
+            } catch (e) {
+                console.log('GC不可用');
+            }
+        }
+        
+        // 定期执行图片优化
+        optimizeImages();
+        
+    }, 60000); // 每分钟尝试清理一次
+    
+    return {
+        cleanup: () => {
+            clearInterval(cleanupInterval);
+            observer.disconnect();
+        }
+    };
+}
+
+// 在页面初始化时启动性能优化
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM加载完成，初始化全局事件...');
+    
+    // 启动性能优化
+    const performanceOptimizer = optimizePagePerformance();
+    
+    // 禁用TinyMCE通知系统
+    if (window.tinymce) {
+        tinymce.PluginManager.add('disable_notifications', function(editor) {
+            // 覆盖通知管理器
+            editor.on('init', function() {
+                editor.notificationManager.open = function() {
+                    // 返回一个空的通知对象，实际上不显示任何通知
+                    return {
+                        close: function() {},
+                        progressBar: { value: function() {} },
+                        text: function() {},
+                        reposition: function() {},
+                        getEl: function() { return null; },
+                        repaint: function() {}
+                    };
+                };
+            });
+        });
+        
+        // 注册插件
+        const currentPlugins = tinymce.get('editor')?.settings.plugins || '';
+        if (currentPlugins && !currentPlugins.includes('disable_notifications')) {
+            // 修复语法错误：不能直接对可选链表达式赋值
+            const editorInstance = tinymce.get('editor');
+            if (editorInstance && editorInstance.settings) {
+                editorInstance.settings.plugins += ' disable_notifications';
+            }
+        }
+    }
+    
+    // 初始化拖拽功能
+    initDragAndDrop();
+    
+    // 添加全局快捷键
+    document.addEventListener('keydown', function(e) {
+        // Ctrl+S 保存
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            saveContent();
+        }
+    });
+    
+    // 检查常用API是否可用
+    const checkApi = (endpoint) => {
+        console.log('正在检查 API 是否可用: ' + endpoint);
+        
+        // 构建API URL
+        const apiUrl = '/api/knowledge/' + endpoint;
+        
+        // 使用HEAD请求检查API是否存在
+        return fetch(apiUrl, { 
+            method: 'HEAD',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            // 成功状态码范围是 200-299
+            if (response.ok) {
+                console.log(`API ${endpoint} 可用`);
+                return { available: true };
+            } else if (response.status === 404) {
+                console.log(`API ${endpoint} 不存在 (404)`);
+                return { available: false, error: 'API 不存在 (404)' };
+            } else {
+                console.log(`API ${endpoint} 状态码: ${response.status}`);
+                return { available: false, error: '状态码: ' + response.status };
+            }
+        })
+        .catch(error => {
+            console.error('检查API时出错:', error);
+            return { available: false, error: error.message };
+        });
+    };
+    
+    Promise.all([
+        checkApi('save-module'),
+        checkApi('delete-module'),
+        checkApi('move-module')
+    ])
+    .then(results => {
+        const warnings = [];
+        
+        if (!results[0].available) {
+            warnings.push('保存模块API不可用，请联系系统管理员');
+        }
+        
+        if (!results[1].available) {
+            warnings.push('删除模块API不可用，请联系系统管理员');
+        }
+        
+        if (!results[2].available) {
+            warnings.push('移动模块API不可用，请联系系统管理员');
+        }
+        
+        if (warnings.length > 0) {
+            console.warn('API检查警告:', warnings);
+            showError('系统错误: ' + warnings.join('<br>'));
+        }
+    })
+    .catch(error => {
+        console.error('API检查失败:', error);
+    });
+});
+
+// 初始化拖拽功能
+function initDragAndDrop() {
+    $('.module-item').draggable({
+        revert: true,
+        helper: 'clone',
+        handle: '.drag-handle',
+        start: function(event, ui) {
+            $(this).addClass('dragging');
+        },
+        stop: function(event, ui) {
+            $(this).removeClass('dragging');
+        }
+    });
+
+    $('.module-item').droppable({
+        accept: '.module-item',
+        hoverClass: 'drop-hover',
+        tolerance: 'pointer',
+        drop: function(event, ui) {
+            const draggedId = ui.draggable.data('id');
+            const targetId = $(this).data('id');
+            
+            if (draggedId === targetId) return;
+            
+            const targetRect = this.getBoundingClientRect();
+            const dropY = event.clientY;
+            const threshold = targetRect.top + (targetRect.height / 2);
+            const direction = dropY < threshold ? 'before' : 'after';
+            
+            moveModule(draggedId, targetId, direction);
+        }
+    });
+}
+
+// 页面加载完成后初始化
+$(document).ready(function() {
+    console.log('页面加载完成，准备初始化...');
+    initDragAndDrop();
+    loadModules();
+    
+    // 初始化TinyMCE编辑器
+    tinymce.init({
+        selector: '#moduleContent',
+        language: 'zh_CN',
+        plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste help wordcount',
+        toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+        height: 400
+    });
+});
+</script>
+{% endblock %}

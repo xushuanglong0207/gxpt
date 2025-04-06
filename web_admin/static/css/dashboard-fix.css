@@ -1,0 +1,149 @@
+/* 统一首页文字字体样式，与时钟显示保持一致 */
+
+/* 统一字体样式 */
+.card-body h4,
+.card-body h5,
+.card-body p,
+.card-body ul,
+.card-body li,
+.card-body strong,
+.card-body span,
+.card-body a,
+.card-header h5,
+.list-group-item,
+.stats-label,
+.stats-value,
+.current-date,
+.anime-font {
+  font-family: "阅读圆黑体", "Microsoft YaHei", "PingFang SC", sans-serif !important;
+  letter-spacing: -0.02em;
+}
+
+/* 平台介绍标题 - 使用与时钟日期一致的样式 */
+.card-body h4.anime-font {
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  color: #4158d0 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: -0.02em !important;
+}
+
+/* 主要功能标题 - 使用醒目的样式 */
+.card-body h5 {
+  font-size: 1.3rem !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* 平台介绍文字 - 与时钟日期相似的样式 */
+.card-body p {
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+  color: #444 !important;
+  font-weight: 500 !important;
+}
+
+/* 功能列表项 - 与时钟星期相似的样式 */
+.card-body ul li {
+  font-size: 1rem !important;
+  line-height: 1.8 !important;
+  color: #444 !important;
+  font-weight: 400 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* 功能列表项中的强调文本 */
+.card-body ul li strong {
+  font-weight: 600 !important;
+  color: #4158d0 !important;
+}
+
+/* 卡片标题 */
+.card-header h5 {
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* 统计卡片数值 */
+.stats-value {
+  font-family: "阅读圆黑体", "Microsoft YaHei", sans-serif !important;
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* 统计卡片标签 */
+.stats-label {
+  font-family: "阅读圆黑体", "Microsoft YaHei", sans-serif !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+}
+
+/* 控制中心标题 */
+h2.anime-font {
+  font-family: "阅读圆黑体", "Microsoft YaHei", sans-serif !important;
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  color: #333 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* 作者名称特殊处理 */
+.footer-author {
+  font-family: "阅读圆黑体", "Microsoft YaHei", sans-serif !important;
+  font-weight: 600 !important;
+  color: #4158d0 !important;
+}
+
+/* 为dashboard.html中新增的类添加样式 */
+.dashboard-title {
+  font-family: "阅读圆黑体", "Microsoft YaHei", sans-serif !important;
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  color: #4158d0 !important;
+  letter-spacing: -0.02em !important;
+  text-shadow: 0 2px 4px rgba(65, 88, 208, 0.15) !important;
+}
+
+.dashboard-intro {
+  font-family: "阅读圆黑体", "Microsoft YaHei", sans-serif !important;
+  font-size: 1rem !important;
+  line-height: 1.7 !important;
+  color: #444 !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.dashboard-subtitle {
+  font-family: "阅读圆黑体", "Microsoft YaHei", sans-serif !important;
+  font-size: 1.4rem !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.feature-list {
+  font-family: "阅读圆黑体", "Microsoft YaHei", sans-serif !important;
+  padding-left: 1.2rem !important;
+}
+
+.feature-list li {
+  font-family: "阅读圆黑体", "Microsoft YaHei", sans-serif !important;
+  font-size: 1rem !important;
+  line-height: 1.8 !important;
+  margin-bottom: 0.6rem !important;
+  color: #444 !important;
+  font-weight: 500 !important;
+}
+
+/* 时钟特殊样式 - 确保时钟区域的字体一致性 */
+.clock-date, 
+.clock-time, 
+.clock-seconds,
+.clock-day,
+.clock-period {
+  font-family: "阅读圆黑体", "Microsoft YaHei", "PingFang SC", sans-serif !important;
+} 

@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ config.get('SITE_TITLE', 'DevOps') }}控制中心{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- 时钟组件 -->
+    <div class="clock-container mb-4 fade-in" style="animation-delay: 0.1s;">
+        <div class="clock-card">
+            <div class="clock-content">
+                <div class="clock-time-container">
+                    <div class="clock-date" id="clock-date">2023年11月20日</div>
+                    <div class="clock-time" id="clock-time">10:25</div>
+                    <div class="clock-seconds" id="clock-seconds">30</div>
+                </div>
+                <div class="clock-info-container">
+                    <div class="clock-day" id="clock-day">星期一</div>
+                    <div class="clock-period" id="clock-period">上午</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="anime-font">控制中心</h2>
+    </div>
+    
+    <!-- 统计卡片 -->
+    <div class="dashboard-stats mb-4">
+        <a href="{{ url_for('tasks') }}" class="text-decoration-none" style="color: inherit;">
+            <div class="stats-card fade-in">
+                <div class="stats-icon stats-icon-tasks">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="stats-data">
+                    <div class="stats-value">{{ tasks_count }}</div>
+                    <div class="stats-label">测试任务</div>
+                </div>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('reports') }}" class="text-decoration-none" style="color: inherit;">
+            <div class="stats-card fade-in" style="animation-delay: 0.1s;">
+                <div class="stats-icon stats-icon-reports">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="stats-data">
+                    <div class="stats-value">{{ reports_count }}</div>
+                    <div class="stats-label">测试报告</div>
+                </div>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('users') }}" class="text-decoration-none" style="color: inherit;">
+            <div class="stats-card fade-in" style="animation-delay: 0.2s;">
+                <div class="stats-icon stats-icon-users">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stats-data">
+                    <div class="stats-value">{{ users_count }}</div>
+                    <div class="stats-label">用户数</div>
+                </div>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('reports') }}" class="text-decoration-none" style="color: inherit;">
+            <div class="stats-card fade-in" style="animation-delay: 0.3s;">
+                <div class="stats-icon stats-icon-errors">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stats-data">
+                    <div class="stats-value">{{ error_count }}</div>
+                    <div class="stats-label">失败用例</div>
+                </div>
+            </div>
+        </a>
+    </div>
+    
+    <!-- 快速操作卡片 -->
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <div class="card fade-in" style="animation-delay: 0.4s;">
+                <div class="card-header">
+                    <h5>快速操作</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a href="{{ url_for('create_task') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-plus-circle me-2"></i>创建新测试任务
+                        </a>
+                        <a href="{{ url_for('reports') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-chart-line me-2"></i>查看测试报告
+                        </a>
+                        {% if session.get('role') == 'admin' %}
+                        <a href="{{ url_for('users') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-users me-2"></i>用户管理
+                        </a>
+                        <a href="{{ url_for('tasks') }}?type=scheduled" class="list-group-item list-group-item-action">
+                            <i class="fas fa-clock me-2"></i>定时任务管理
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="card fade-in" style="animation-delay: 0.5s;">
+                <div class="card-header">
+                    <h5>系统信息</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-code-branch me-2"></i> 系统版本</span>
+                            <span class="badge bg-primary">1.0.0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-server me-2"></i> 运行环境</span>
+                            <span class="badge bg-info">Flask {{ flask_version }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-calendar-day me-2"></i> 当前日期</span>
+                            <span class="current-date"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-user me-2"></i> 登录用户</span>
+                            <span>{{ session.get('username') }} ({{ session.get('role') }})</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 平台介绍 -->
+    <div class="card fade-in" style="animation-delay: 0.6s;">
+        <div class="card-header">
+            <h5>平台介绍</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-7">
+                    <h4 class="anime-font mb-3 dashboard-title">高效测试平台</h4>
+                    <p class="dashboard-intro">欢迎使用高效测试平台，这是一个高效、可靠、专业的测试解决方案。通过本平台，您可以轻松管理和执行测试任务，查看测试报告，提高测试效率。</p>
+                    
+                    <h5 class="mt-4 mb-3 dashboard-subtitle">主要功能</h5>
+                    <ul class="feature-list">
+                        <li><strong>任务管理</strong> - 创建、配置和执行测试任务</li>
+                        <li><strong>报告分析</strong> - 查看详细的测试报告和结果分析</li>
+                        <li><strong>定时任务</strong> - 设置定时执行的自动化测试任务</li>
+                        <li><strong>钉钉通知</strong> - 测试结果通过钉钉机器人实时通知</li>
+                        <li><strong>用户管理</strong> - 管理测试平台用户及权限</li>
+                    </ul>
+                </div>
+                <div class="col-md-5 text-center">
+                    <div class="p-4">
+                        <i class="fas fa-laptop-code fa-6x text-primary mb-3" style="filter: drop-shadow(0 5px 15px rgba(65, 88, 208, 0.3));"></i>
+                        <div class="mt-3">
+                            <p class="lead mb-1">高效测试平台</p>
+                            <p class="text-muted">作者: <span class="footer-author">longshen</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="anime-badge">
+    longshen
+</div>
+
+<!-- 登录次数提示 -->
+{% if login_count and login_message %}
+<div class="login-notification">
+    <div class="login-notification-content">
+        <i class="fas fa-trophy"></i>
+        <span>{{ login_message }}</span>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 初始化渐入元素
+    initFadeInElements();
+    
+    // 初始化时钟显示
+    initClock();
+});
+
+// 初始化时钟函数
+function initClock() {
+    // 获取当前时间
+    var now = new Date();
+    
+    // 格式化日期、时间
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    var day = now.getDate();
+    var hours = now.getHours();
+    var minutes = now.getMinutes();
+    var seconds = now.getSeconds();
+    
+    // 确保两位数格式
+    month = (month < 10) ? "0" + month : month;
+    day = (day < 10) ? "0" + day : day;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
+    
+    // 上午/下午判断
+    var period = (hours < 12) ? "上午" : "下午";
+    
+    // 转换为12小时制
+    var hours12 = hours % 12;
+    hours12 = hours12 ? hours12 : 12; // 0点显示为12点
+    
+    // 获取星期
+    var weekdays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+    var weekday = weekdays[now.getDay()];
+    
+    // 更新DOM - 使用最直接的方式
+    if(document.getElementById("clock-date")) {
+        document.getElementById("clock-date").innerHTML = year + "年" + month + "月" + day + "日";
+    }
+    if(document.getElementById("clock-time")) {
+        document.getElementById("clock-time").innerHTML = hours12 + ":" + minutes;
+    }
+    if(document.getElementById("clock-seconds")) {
+        document.getElementById("clock-seconds").innerHTML = seconds;
+    }
+    if(document.getElementById("clock-day")) {
+        document.getElementById("clock-day").innerHTML = weekday;
+    }
+    if(document.getElementById("clock-period")) {
+        document.getElementById("clock-period").innerHTML = period;
+    }
+    
+    // 更新系统信息中的日期
+    var currentDateElements = document.getElementsByClassName("current-date");
+    for(var i = 0; i < currentDateElements.length; i++) {
+        currentDateElements[i].innerHTML = year + "年" + month + "月" + day + "日";
+    }
+    
+    // 设置每秒更新一次
+    setTimeout(initClock, 1000);
+}
+
+// 加载动画元素函数
+function initFadeInElements() {
+    // 获取所有fade-in类的元素
+    var fadeElements = document.getElementsByClassName("fade-in");
+    for(var i = 0; i < fadeElements.length; i++) {
+        var element = fadeElements[i];
+        var delay = element.style.animationDelay || (i * 0.1) + 's';
+        
+        element.style.animationDelay = delay;
+        element.style.visibility = "visible";
+        
+        // 统计卡片悬停效果通过CSS类实现
+    }
+    
+    // 登录提示动画
+    var notifications = document.getElementsByClassName("login-notification");
+    if(notifications.length > 0) {
+        setTimeout(function() {
+            notifications[0].classList.add("show");
+            
+            setTimeout(function() {
+                notifications[0].classList.remove("show");
+            }, 5000);
+        }, 1000);
+    }
+}
+</script>
+{% endblock %} 

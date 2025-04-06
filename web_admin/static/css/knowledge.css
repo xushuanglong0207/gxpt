@@ -1,0 +1,187 @@
+/* 知识库页面样式 */
+.container-fluid {
+    height: calc(100vh - 56px);
+    padding: 1rem;
+}
+
+.sidebar {
+    width: 300px;
+    height: 100%;
+    overflow-y: auto;
+    border-right: 1px solid #dee2e6;
+    padding-right: 1rem;
+}
+
+.content {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-left: 1rem;
+}
+
+.toolbar {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 0.5rem;
+}
+
+.editor-container {
+    flex: 1;
+    position: relative;
+}
+
+#editor {
+    height: 100%;
+}
+
+/* 模块树样式 */
+.module-node {
+    margin-bottom: 5px;
+}
+
+.module-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.module-header:hover {
+    background-color: #e9ecef;
+}
+
+.module-toggle {
+    margin-right: 8px;
+    width: 16px;
+    text-align: center;
+}
+
+.module-title {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.module-count {
+    margin: 0 10px;
+    color: #6c757d;
+    font-size: 0.85em;
+}
+
+.module-actions {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.module-header:hover .module-actions {
+    opacity: 1;
+}
+
+.module-actions i {
+    margin-left: 8px;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.module-actions i:hover {
+    color: #343a40;
+}
+
+.module-children {
+    margin-left: 20px;
+    padding-left: 10px;
+    border-left: 1px dashed #dee2e6;
+}
+
+.create-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+/* 文章列表样式 */
+.article-list {
+    margin-top: 10px;
+}
+
+.article-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.article-item:hover {
+    background-color: #e9ecef;
+}
+
+.article-item i {
+    margin-right: 8px;
+    color: #6c757d;
+}
+
+/* TinyMCE编辑器样式优化 */
+.tox-tinymce {
+    border: 1px solid #dee2e6 !important;
+    border-radius: 4px !important;
+}
+
+.tox-statusbar {
+    border-top: 1px solid #dee2e6 !important;
+}
+
+/* Toast通知样式 */
+#toastContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+}
+
+.toast {
+    min-width: 280px;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+/* 模态框样式优化 */
+.modal-content {
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+/* 无模块提示 */
+.no-module {
+    padding: 20px;
+    text-align: center;
+    color: #6c757d;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    margin-top: 10px;
+} 

@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}定时任务管理 - 自动化测试平台{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="anime-font">定时任务管理</h2>
+        <a href="{{ url_for('add_scheduled_task') }}" class="btn btn-anime">
+            <i class="fas fa-plus-circle me-1"></i> 创建任务
+        </a>
+    </div>
+
+    {% if tasks %}
+    <div class="card fade-in">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5>所有定时任务 ({{ tasks|length }})</h5>
+                <div class="input-group" style="max-width: 300px;">
+                    <input type="text" id="task-filter" class="form-control" placeholder="搜索任务...">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>计划</th>
+                            <th>上次执行</th>
+                            <th>状态</th>
+                            <th>通知</th>
+                            <th style="width: 200px;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in tasks %}
+                        <tr class="task-item" data-task-name="{{ task.name|lower }}" data-task-command="{{ task.command|lower }}">
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="fw-bold">{{ task.name }}</span>
+                                    <small class="text-muted">{{ task.description or '无描述' }}</small>
+                                </div>
+                            </td>
+                            <td>
+                                {% if task.schedule_type == 'daily' %}
+                                <span class="badge bg-info"><i class="far fa-calendar-alt me-1"></i> 每天 {{ task.schedule_value }}</span>
+                                {% elif task.schedule_type == 'weekly' %}
+                                <span class="badge bg-primary"><i class="far fa-calendar-alt me-1"></i> 每周 {{ task.schedule_value }}</span>
+                                {% elif task.schedule_type == 'monthly' %}
+                                <span class="badge bg-success"><i class="far fa-calendar-alt me-1"></i> 每月 {{ task.schedule_value }}</span>
+                                {% elif task.schedule_type == 'interval' %}
+                                <span class="badge bg-warning"><i class="fas fa-sync-alt me-1"></i> 每 {{ task.schedule_value }}秒</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if task.last_run %}
+                                {{ task.last_run }}
+                                {% else %}
+                                <span class="text-muted">从未运行</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if task.enabled %}
+                                <span class="badge bg-success">启用</span>
+                                {% else %}
+                                <span class="badge bg-secondary">禁用</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if task.notify %}
+                                <span class="badge bg-info"><i class="far fa-bell me-1"></i> 钉钉</span>
+                                {% else %}
+                                <span class="text-muted">无</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{{ url_for('edit_scheduled_task', task_id=task.id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form method="post" action="{{ url_for('toggle_scheduled_task', task_id=task.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-sm {% if task.enabled %}btn-outline-secondary{% else %}btn-outline-success{% endif %}">
+                                            {% if task.enabled %}
+                                            <i class="fas fa-pause"></i>
+                                            {% else %}
+                                            <i class="fas fa-play"></i>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                    <form method="post" action="{{ url_for('delete_scheduled_task', task_id=task.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger delete-confirm">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="task-detail-row">
+                            <td colspan="6" class="bg-light">
+                                <pre class="m-0 p-2" style="font-size: 0.8rem; white-space: pre-wrap;">{{ task.command }}</pre>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card fade-in">
+        <div class="card-body text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-calendar-alt fa-4x text-muted"></i>
+            </div>
+            <h5 class="text-muted mb-3">暂无定时任务</h5>
+            <p class="text-muted">创建定时任务来自动执行测试和其他操作</p>
+            <a href="{{ url_for('add_scheduled_task') }}" class="btn btn-anime">
+                <i class="fas fa-plus-circle me-1"></i> 创建第一个任务
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="anime-badge">
+    longshen
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // 过滤任务
+    $('#task-filter').on('input', function() {
+        var filterValue = $(this).val().toLowerCase();
+        
+        $('.task-item').each(function() {
+            var taskName = $(this).data('task-name');
+            var taskCommand = $(this).data('task-command');
+            
+            if (taskName.includes(filterValue) || taskCommand.includes(filterValue)) {
+                $(this).show();
+                $(this).next('.task-detail-row').show();
+            } else {
+                $(this).hide();
+                $(this).next('.task-detail-row').hide();
+            }
+        });
+    });
+    
+    // 初始化隐藏详情行
+    $('.task-detail-row').hide();
+    
+    // 点击任务行显示/隐藏详情
+    $('.task-item').on('click', function() {
+        $(this).next('.task-detail-row').toggle();
+    });
+});
+</script>
+{% endblock %} 

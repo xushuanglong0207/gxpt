@@ -1,0 +1,2289 @@
+{% extends "base.html" %}
+
+{% block title %}UGREEN NAS 知识库{% endblock %}
+
+{% block styles %}
+<link href="{{ url_for('static', filename='editor/css/content.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/knowledge_base.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- 左侧模块树 -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">知识库模块</h5>
+                        <button class="btn btn-sm btn-primary" onclick="showCreateModuleModal()">
+                            <i class="fas fa-plus"></i> 新建模块
+                    </button>
+                </div>
+                    <div id="module-tree" class="module-tree"></div>
+            </div>
+            </div>
+    </div>
+    
+    <!-- 右侧内容区 -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <div class="toolbar">
+                        <button class="btn btn-primary" id="edit-btn">
+                            <i class="fas fa-edit"></i> 编辑
+                        </button>
+                        <button class="btn btn-success" id="save-btn">
+                            <i class="fas fa-save"></i> 保存
+                        </button>
+            </div>
+            
+                    <!-- 添加文章标题元素 -->
+                    <h3 id="article-title" class="mt-3 mb-4" style="display: none;"></h3>
+                    
+                    <div id="editor-wrapper" class="editor-container">
+                        <div id="editor"></div>
+            </div>
+            
+                    <div id="welcome-container" class="text-center py-5">
+                        <i class="fas fa-book-reader mb-3" style="font-size: 3rem; color: #6c757d;"></i>
+                        <h4>欢迎使用知识库</h4>
+                        <p class="text-muted">请从左侧选择一篇文章开始阅读，或者创建新的文章。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 创建模块模态框 -->
+<div class="modal fade" id="createModuleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">创建新模块</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createModuleForm">
+                    <div class="mb-3">
+                        <label for="moduleName" class="form-label">模块名称</label>
+                        <input type="text" class="form-control" id="moduleName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="parentModule" class="form-label">父级模块</label>
+                        <select class="form-select" id="parentModule" name="parent_id">
+                            <option value="">无（顶级模块）</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="createModule()">创建</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 创建文章模态框 -->
+<div class="modal fade" id="createArticleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">创建新文章</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createArticleForm">
+                    <div class="mb-3">
+                        <label for="articleTitle" class="form-label">文章标题</label>
+                        <input type="text" class="form-control" id="articleTitle" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="moduleId" class="form-label">所属模块</label>
+                        <select class="form-select" id="moduleId" name="module_id" required>
+                            <option value="">请选择模块</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="createArticle()">创建</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- 纯HTML编辑器脚本，不依赖第三方库 -->
+<script>
+// 全局变量定义
+let moduleData = [];
+let currentArticleId = null;
+let expandedModules = new Set();
+let editorInstance = null;
+let lastSavedContent = '';
+
+// 禁用过多的通知
+let lastToastTime = 0;
+let toastCount = 0;
+const MAX_TOASTS = 3; // 每10秒最多显示3条通知
+
+// 本地存储键
+const LOCAL_STORAGE_PREFIX = 'knowledge_base_';
+const ARTICLES_KEY = LOCAL_STORAGE_PREFIX + 'articles';
+const MODULES_KEY = LOCAL_STORAGE_PREFIX + 'modules';
+
+// 使用简单直接的HTML编辑器，不再依赖复杂的实现
+function initEditor(mode = 'edit', content = '') {
+    try {
+        console.log(`开始初始化编辑器，模式: ${mode}, 内容长度: ${content.length}`);
+        
+        // 清理旧的通知
+        clearOldToasts();
+        
+        // 显示编辑器容器
+        const editorWrapper = document.getElementById('editor-wrapper');
+        if (!editorWrapper) {
+            console.error('找不到编辑器容器元素: editor-wrapper');
+            return false;
+        }
+        editorWrapper.style.display = 'flex';
+        editorWrapper.style.flexDirection = 'column';
+        
+        // 清空编辑器容器
+        const editorContainer = document.getElementById('editor');
+        if (!editorContainer) {
+            console.error('找不到编辑器内容容器元素: editor');
+            return false;
+        }
+        editorContainer.innerHTML = '';
+        
+        // 创建编辑器提示标题
+        const editorTitle = document.createElement('div');
+        editorTitle.className = 'editor-title';
+        editorTitle.innerHTML = `<i class="fas fa-${mode === 'edit' ? 'pen' : 'eye'}"></i> ${mode === 'edit' ? '编辑模式' : '阅读模式'}`;
+        editorContainer.appendChild(editorTitle);
+        
+        // 创建简单编辑器
+        const editorContent = document.createElement('div');
+        editorContent.id = 'simple-editor';
+        editorContent.className = mode === 'read' ? 'simple-viewer' : 'simple-editor';
+        
+        // 添加基本的格式化控制按钮
+        if (mode === 'edit') {
+            const toolbar = document.createElement('div');
+            toolbar.className = 'simple-editor-toolbar';
+            
+            const formatButtons = [
+                { command: 'bold', icon: 'fa-bold', title: '加粗' },
+                { command: 'italic', icon: 'fa-italic', title: '斜体' },
+                { command: 'underline', icon: 'fa-underline', title: '下划线' },
+                { command: 'strikeThrough', icon: 'fa-strikethrough', title: '删除线' },
+                { command: 'formatBlock', arg: '<h1>', icon: 'fa-heading', title: '标题1' },
+                { command: 'formatBlock', arg: '<h2>', icon: 'fa-heading', style: 'font-size: 0.9em', title: '标题2' },
+                { command: 'formatBlock', arg: '<h3>', icon: 'fa-heading', style: 'font-size: 0.8em', title: '标题3' },
+                { command: 'formatBlock', arg: '<p>', icon: 'fa-paragraph', title: '段落' },
+                { command: 'insertOrderedList', icon: 'fa-list-ol', title: '有序列表' },
+                { command: 'insertUnorderedList', icon: 'fa-list-ul', title: '无序列表' },
+                { command: 'justifyLeft', icon: 'fa-align-left', title: '左对齐' },
+                { command: 'justifyCenter', icon: 'fa-align-center', title: '居中' },
+                { command: 'justifyRight', icon: 'fa-align-right', title: '右对齐' },
+                { command: 'insertHorizontalRule', icon: 'fa-minus', title: '分隔线' },
+                { command: 'removeFormat', icon: 'fa-eraser', title: '清除格式' }
+            ];
+            
+            formatButtons.forEach(btn => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'btn btn-sm btn-outline-secondary';
+                button.title = btn.title;
+                button.innerHTML = `<i class="fas ${btn.icon}"${btn.style ? ` style="${btn.style}"` : ''}></i>`;
+                button.onclick = function() {
+                    if (btn.arg) {
+                        document.execCommand(btn.command, false, btn.arg);
+                    } else {
+                        document.execCommand(btn.command, false);
+                    }
+                    editorContent.focus();
+                };
+                toolbar.appendChild(button);
+            });
+            
+            editorContainer.appendChild(toolbar);
+            
+            // 添加颜色选择工具栏（使用新的实现）
+            const colorToolbar = initColorButtons(editorContent);
+            editorContainer.appendChild(colorToolbar);
+        }
+        
+        // 设置为可编辑（在编辑模式下）
+        editorContent.contentEditable = mode !== 'read';
+        
+        // 设置内容
+        editorContent.innerHTML = content || '<p>点击此处编辑内容...</p>';
+        
+        // 添加到容器
+        editorContainer.appendChild(editorContent);
+        
+        console.log('编辑器元素已添加到DOM中');
+        
+        // 创建一个简单的编辑器控制接口
+        editorInstance = {
+            getContent: function() {
+                return editorContent.innerHTML;
+            },
+            setContent: function(html) {
+                editorContent.innerHTML = html || '';
+            }
+        };
+        
+        // 为编辑区域添加点击事件提示（如果为空）
+        if (mode === 'edit') {
+            editorContent.addEventListener('focus', function() {
+                if (editorContent.innerHTML === '<p>点击此处编辑内容...</p>') {
+                    editorContent.innerHTML = '';
+                }
+            });
+            
+            editorContent.addEventListener('blur', function() {
+                if (!editorContent.innerHTML.trim()) {
+                    editorContent.innerHTML = '<p>点击此处编辑内容...</p>';
+                }
+            });
+            
+            // 自动聚焦
+            setTimeout(() => {
+                editorContent.focus();
+                console.log('编辑器已自动聚焦');
+            }, 100);
+        }
+        
+        console.log('编辑器初始化成功');
+        
+        // 确保保存按钮绑定事件
+        const saveBtn = document.getElementById('save-btn');
+        if (saveBtn && mode === 'edit') {
+            console.log('为保存按钮添加点击事件');
+            // 移除可能存在的旧事件监听器
+            saveBtn.removeEventListener('click', saveArticle);
+            // 添加新的事件监听器
+            saveBtn.addEventListener('click', saveArticle);
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('初始化编辑器时出错:', error);
+        
+        // 简单显示错误
+        const editorContainer = document.getElementById('editor-container');
+        if (editorContainer) {
+            editorContainer.innerHTML = `
+                <div style="color: red; padding: 20px; text-align: center;">
+                    <h4>编辑器初始化失败</h4>
+                    <p>${error.message}</p>
+                    <p>请刷新页面重试</p>
+                </div>
+            `;
+        }
+        
+        return false;
+    }
+}
+
+// 清理旧通知
+function clearOldToasts() {
+    const container = document.getElementById('toastContainer');
+    if (container) {
+        container.innerHTML = '';
+    }
+}
+
+// 加载模块
+function loadModules() {
+    console.log('开始加载模块列表...');
+    
+    // 显示加载提示
+    showToast('info', '正在加载模块...');
+    
+    return fetch('/api/knowledge/modules')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`服务器响应错误: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('获取到的模块数据:', data);
+            
+            // 检查数据格式，兼容不同的返回结构
+            let modulesList = [];
+            if (data.modules) {
+                console.log('使用data.modules格式');
+                modulesList = data.modules;
+            } else if (Array.isArray(data)) {
+                console.log('使用数组格式');
+                modulesList = data;
+            } else {
+                console.log('未识别的数据格式，使用空数组');
+                modulesList = [];
+            }
+            
+            // 更新全局模块数据
+            moduleData = modulesList;
+                
+                // 先更新模块选择框
+                updateModuleSelects();
+                
+                // 然后渲染模块树
+                renderModuleTree();
+        
+                // 显示成功消息
+                showToast('success', '模块加载成功');
+                
+                // 自动打开第一个模块
+                if (moduleData.length > 0 && !currentArticleId) {
+                    const firstModule = moduleData[0];
+                    expandedModules.add(firstModule.id);
+                    renderModuleTree();
+                    
+                    // 检查是否有文章可以打开
+                    if (firstModule.articles && firstModule.articles.length > 0) {
+                        const firstArticle = firstModule.articles[0];
+                        openArticle(firstArticle.id);
+                    }
+                }
+                
+                return moduleData;
+        })
+        .catch(error => {
+            console.error('加载模块失败:', error);
+            showToast('error', '加载模块失败: ' + error.message);
+            
+            // 确保渲染一个空的模块树，显示创建模块按钮
+            moduleData = [];
+            renderModuleTree();
+            
+            return [];
+        });
+}
+
+// 渲染模块树
+function renderModuleTree() {
+    const container = document.getElementById('module-tree');
+    
+    // 检查容器是否存在
+    if (!container) {
+        console.error('模块树容器不存在');
+        return;
+    }
+        
+    container.innerHTML = '';
+    
+    // 如果没有模块数据
+    if (!moduleData || moduleData.length === 0) {
+        container.innerHTML = `
+            <div class="p-3 text-center">
+                <div class="text-muted mb-3">暂无模块</div>
+                <button class="btn btn-sm btn-outline-primary" onclick="showCreateModuleModal()">
+                    <i class="fas fa-plus"></i> 创建第一个模块
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    // 检查是否有忽略的模块
+    const ignoredModules = window.ignoredModules || [];
+    
+    // 使用现有的renderModule函数渲染模块
+    moduleData.forEach(module => {
+        container.appendChild(renderModule(module));
+    });
+}
+
+// 切换模块展开/折叠状态
+function toggleModule(moduleId) {
+    console.log(`切换模块 ${moduleId} 展开状态`);
+    
+    if (expandedModules.has(moduleId)) {
+        console.log(`折叠模块 ${moduleId}`);
+        expandedModules.delete(moduleId);
+    } else {
+        console.log(`展开模块 ${moduleId}`);
+        expandedModules.add(moduleId);
+        
+        // 查找模块
+        const mod = findModuleById(moduleId);
+        console.log('模块信息:', mod);
+        
+        // 如果模块存在且有文章数量但无文章列表
+        if (mod && mod.count > 0 && (!mod.articles || mod.articles.length === 0)) {
+            fetchArticlesForModule(moduleId);
+        }
+    }
+    
+    renderModuleTree();
+}
+
+// 更新模块选择器
+function updateModuleSelects() {
+    const parentModuleSelect = document.querySelector('select[name="parent_id"]');
+    const moduleSelect = document.querySelector('select[name="module_id"]');
+    
+    if (!parentModuleSelect || !moduleSelect) return;
+    
+    // 清空选择器
+    parentModuleSelect.innerHTML = '<option value="">无（创建顶级模块）</option>';
+    moduleSelect.innerHTML = '<option value="">请选择模块</option>';
+    
+    // 递归填充选择器
+    function populateOptions(modules, level = 0) {
+        modules.forEach(module => {
+            // 创建选项
+            const option1 = document.createElement('option');
+            const option2 = document.createElement('option');
+            
+            option1.value = option2.value = module.id;
+            option1.textContent = option2.textContent = '　'.repeat(level) + module.name;
+            
+            parentModuleSelect.appendChild(option1);
+            moduleSelect.appendChild(option2);
+            
+            // 递归处理子模块
+            if (module.children && module.children.length > 0) {
+                populateOptions(module.children, level + 1);
+            }
+        });
+    }
+    
+    // 填充选项
+    populateOptions(moduleData);
+}
+
+// 打开文章
+function openArticle(articleId, editMode = false) {
+    // 检查参数是否有效
+    if (!articleId) {
+        console.error('无效的文章ID');
+        showToast('error', '无效的文章ID');
+        return;
+    }
+    
+    // 检查是否是特殊ID（loading或empty）
+    if (articleId === 'loading' || articleId === 'empty') {
+        console.log('点击了提示项，忽略');
+        return;
+    }
+    
+    // 保存当前文章ID
+    currentArticleId = articleId;
+    
+    console.log('正在加载文章:', articleId);
+    showToast('info', '正在加载文章...');
+    
+    // 销毁现有编辑器
+    destroyEditor();
+    
+    // 显示工具栏
+    const toolbar = document.querySelector('.toolbar');
+    if (!toolbar) {
+        console.error('找不到工具栏元素');
+    } else {
+        toolbar.style.display = 'block';
+    }
+    
+    // 隐藏欢迎页
+    const welcomeContainer = document.getElementById('welcome-container');
+    if (!welcomeContainer) {
+        console.error('找不到欢迎页容器元素');
+    } else {
+        welcomeContainer.style.display = 'none';
+    }
+    
+    // 显示编辑器容器
+    const editorWrapper = document.getElementById('editor-wrapper');
+    if (!editorWrapper) {
+        console.error('找不到编辑器容器元素');
+    } else {
+        editorWrapper.style.display = 'block';
+    }
+    
+    // 对于临时创建的文章（以local_开头），直接进入编辑模式
+    if (articleId.startsWith('local_')) {
+        // 在模块树中查找文章信息
+        let articleInfo = null;
+        for (const module of moduleData) {
+            const findResult = findArticleInModuleData(module, articleId);
+            if (findResult) {
+                articleInfo = findResult;
+                break;
+            }
+        }
+        
+        if (!articleInfo) {
+            showToast('error', '无法找到文章信息');
+            showWelcomePage();
+            return;
+        }
+        
+        // 更新文章标题
+        const titleElement = document.getElementById('article-title');
+        if (titleElement) {
+            titleElement.textContent = articleInfo.title || '无标题';
+            titleElement.style.display = 'block'; // 显示标题元素
+        } else {
+            console.error('找不到文章标题元素');
+        }
+        
+        // 初始化编辑器（默认进入编辑模式）
+        const editorInitialized = initEditor('edit', articleInfo.content || '');
+        
+        if (editorInitialized) {
+            // 显示保存按钮，隐藏编辑按钮
+            const editBtn = document.getElementById('edit-btn');
+            const saveBtn = document.getElementById('save-btn');
+            
+            if (editBtn) editBtn.style.display = 'none';
+            if (saveBtn) saveBtn.style.display = 'inline-block';
+            
+            // 刷新模块树以高亮当前文章
+            renderModuleTree();
+            
+            console.log('临时文章加载成功，进入编辑模式');
+        } else {
+            console.error('编辑器初始化失败');
+            showWelcomePage();
+        }
+        
+        return;
+    }
+    
+    // 对于常规文章，从服务器加载
+    fetch(`/api/knowledge/article/${articleId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`服务器响应错误: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('获取到的文章数据:', data);
+            
+            if (data.success || data.content) { // 增加兼容性
+                // 提取文章内容和标题
+                let content = '';
+                let title = '无标题';
+                
+                if (data.content !== undefined) {
+                    content = data.content;
+                    title = data.title || '无标题';
+                    console.log('使用数据的直接属性，标题:', title);
+                } else if (data.article && data.article.content !== undefined) {
+                    // 兼容另一种返回格式
+                    content = data.article.content;
+                    title = data.article.title || '无标题';
+                    console.log('使用数据的article属性，标题:', title);
+                }
+                
+                // 更新文章标题
+                const titleElement = document.getElementById('article-title');
+                if (!titleElement) {
+                    console.error('找不到文章标题元素');
+                } else {
+                    titleElement.textContent = title;
+                    titleElement.style.display = 'block'; // 显示标题元素
+                }
+                
+                // 确保编辑器容器可见
+                if (editorWrapper) {
+                    editorWrapper.style.display = 'block';
+                }
+                
+                // 初始化编辑器（根据editMode决定模式）
+                const mode = editMode ? 'edit' : 'read';
+                const editorInitialized = initEditor(mode, content);
+                
+                if (!editorInitialized) {
+                    console.error('编辑器初始化失败');
+                    throw new Error('编辑器初始化失败');
+                }
+                
+                // 根据模式显示按钮
+                const editBtn = document.getElementById('edit-btn');
+                const saveBtn = document.getElementById('save-btn');
+                
+                if (editBtn) editBtn.style.display = editMode ? 'none' : 'inline-block';
+                if (saveBtn) saveBtn.style.display = editMode ? 'inline-block' : 'none';
+                
+                // 刷新模块树以高亮当前文章
+                renderModuleTree();
+                
+                console.log(`文章加载成功，进入${editMode ? '编辑' : '阅读'}模式`);
+            } else {
+                throw new Error(data.error || '加载文章失败');
+            }
+        })
+        .catch(error => {
+            console.error('加载文章失败:', error);
+            showToast('error', '加载文章失败: ' + error.message);
+            
+            // 显示欢迎页
+            showWelcomePage();
+        });
+}
+
+// 查找特定ID的文章在模块中的信息
+function findArticleInModuleData(module, articleId) {
+    // 检查当前模块的文章列表
+    if (module.articles && module.articles.length > 0) {
+        for (const article of module.articles) {
+            if (article.id === articleId) {
+                return article;
+            }
+        }
+    }
+    
+    // 递归检查子模块
+    if (module.children && module.children.length > 0) {
+        for (const child of module.children) {
+            const result = findArticleInModuleData(child, articleId);
+            if (result) {
+                return result;
+            }
+        }
+    }
+    
+    return null;
+}
+
+// 编辑文章
+function editArticle(articleId) {
+    console.log('切换到编辑模式:', articleId);
+    
+    // 先获取文章内容
+    const content = document.getElementById('article-content').innerHTML;
+    if (!content) {
+        console.error('无法获取文章内容');
+        showToast('error', '无法编辑：文章内容为空');
+        return;
+    }
+    
+    // 初始化编辑器
+    const editorInitialized = initEditor('edit', content);
+    
+    if (!editorInitialized) {
+        console.error('编辑器初始化失败');
+        showToast('error', '编辑器初始化失败，请刷新页面重试');
+        return;
+    }
+    
+    // 更新按钮状态
+    const editBtn = document.getElementById('edit-btn');
+    const saveBtn = document.getElementById('save-btn');
+    
+    if (editBtn) editBtn.style.display = 'none';
+    if (saveBtn) {
+        saveBtn.style.display = 'inline-block';
+        // 确保绑定了保存事件
+        saveBtn.removeEventListener('click', saveArticle);
+        saveBtn.addEventListener('click', saveArticle);
+    }
+    
+    // 确保编辑器容器可见
+    const editorWrapper = document.getElementById('editor-wrapper');
+    if (editorWrapper) {
+        editorWrapper.style.display = 'block';
+    }
+    
+    // 聚焦编辑器
+    setTimeout(() => {
+        const editorElement = document.getElementById('simple-editor');
+        if (editorElement) {
+            editorElement.focus();
+            console.log('编辑器聚焦成功');
+        } else {
+            console.error('找不到编辑器元素，无法聚焦');
+        }
+                                }, 100);
+    
+    showToast('success', '已切换到编辑模式');
+}
+
+// 保存文章
+function saveArticle() {
+    console.log('开始保存文章:', currentArticleId);
+    
+    if (!currentArticleId) {
+        console.error('无法保存：无效的文章ID');
+        showToast('error', '无法保存文章：未选择文章');
+        return;
+    }
+    
+    // 获取编辑器内容 - 使用更稳健的方法
+    let content = '';
+    
+    // 首先尝试使用editorInstance
+    if (editorInstance && typeof editorInstance.getContent === 'function') {
+    try {
+        content = editorInstance.getContent();
+            console.log('从editorInstance获取内容成功，长度:', content.length);
+    } catch (e) {
+            console.error('从editorInstance获取内容失败:', e);
+        }
+    }
+    
+    // 如果无法从editorInstance获取，尝试直接从DOM获取
+    if (!content) {
+        const editorElement = document.getElementById('simple-editor');
+        if (editorElement) {
+            content = editorElement.innerHTML;
+            console.log('从DOM元素获取内容成功，长度:', content.length);
+        }
+    }
+    
+    if (!content || content === '<p>点击此处编辑内容...</p>') {
+        console.warn('文章内容为空');
+        showToast('warning', '文章内容不能为空');
+        return;
+    }
+    
+    // 显示保存中的提示
+    showToast('info', '正在保存文章...');
+    
+    // 构建请求数据
+    const requestData = {
+        content: content
+    };
+    
+    // 如果是临时创建的文章（以local_开头），使用POST创建新文章
+    if (currentArticleId.startsWith('local_')) {
+        // 获取文章标题和模块ID
+        const articleTitle = document.getElementById('article-title').textContent || '无标题';
+        
+        // 查找模块ID
+        let moduleId = '';
+        for (const module of moduleData) {
+            if (findArticleInModule(module, currentArticleId)) {
+                moduleId = module.id;
+                break;
+            }
+        }
+        
+        if (!moduleId) {
+            showToast('error', '保存失败：无法确定文章所属模块');
+            return;
+        }
+        
+        // 构建完整请求数据
+        const createData = {
+            title: articleTitle,
+            module_id: moduleId,
+            content: content
+        };
+        
+        // 发送创建请求
+        fetch('/api/knowledge/article', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(createData)
+        })
+        .then(handleResponse)
+        .then(data => {
+            if (data && (data.success || data.article_id || (data.article && data.article.id))) {
+                let newArticleId = data.article_id || (data.article && data.article.id);
+                showToast('success', '文章创建成功');
+                
+                // 等待服务器处理，然后刷新页面
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            } else {
+                throw new Error('创建文章失败');
+            }
+        })
+        .catch(error => {
+            console.error('保存文章失败:', error);
+            showToast('error', '保存文章失败: ' + error.message);
+        });
+    } else {
+        // 正常更新现有文章
+        const url = `/api/knowledge/article/${currentArticleId}`;
+        console.log('发送更新请求到:', url);
+        
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.error('服务器响应错误:', response.status);
+                return response.json().then(data => {
+                    throw new Error(data.error || `服务器响应错误: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data && data.success) {
+                console.log('保存成功:', data);
+                showToast('success', '文章保存成功');
+                
+                // 保存成功后的处理
+                lastSavedContent = content;
+                
+                // 切换回阅读模式
+                openArticle(currentArticleId);
+            } else {
+                throw new Error(data.error || '保存文章失败，服务器返回未知错误');
+            }
+        })
+        .catch(error => {
+            console.error('保存文章失败:', error);
+            showToast('error', '保存文章失败: ' + error.message);
+        });
+    }
+}
+
+// 处理API响应的通用函数
+function handleResponse(response) {
+    if (!response.ok) {
+        return response.text().then(text => {
+            try {
+                const data = JSON.parse(text);
+                throw new Error(data.error || `服务器响应错误: ${response.status}`);
+            } catch (e) {
+                if (e instanceof SyntaxError) {
+                    throw new Error(`服务器响应错误 ${response.status}: ${text}`);
+                }
+                throw e;
+            }
+        });
+    }
+    
+    return response.json().catch(() => {
+        // 处理成功但非JSON响应的情况
+        return { success: true };
+    });
+}
+
+// 查找文章所在的模块
+function findArticleInModule(module, articleId) {
+    // 检查当前模块的文章列表
+    if (module.articles && module.articles.length > 0) {
+        for (const article of module.articles) {
+            if (article.id === articleId) {
+                return true;
+            }
+        }
+    }
+    
+    // 递归检查子模块
+    if (module.children && module.children.length > 0) {
+        for (const child of module.children) {
+            if (findArticleInModule(child, articleId)) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
+// 销毁编辑器
+function destroyEditor() {
+    console.log('开始销毁编辑器');
+    
+    // 简单清空编辑器容器即可
+    const editorContainer = document.getElementById('editor');
+    if (!editorContainer) {
+        console.error('找不到编辑器容器元素，无法销毁编辑器');
+        return false;
+    }
+    
+    // 保存当前内容到临时变量（如果需要的话）
+    let content = '';
+    if (editorInstance && typeof editorInstance.getContent === 'function') {
+        try {
+            content = editorInstance.getContent();
+            console.log('销毁前保存了编辑器内容，长度:', content.length);
+        } catch (e) {
+            console.error('获取编辑器内容失败:', e);
+        }
+    }
+    
+    // 清空容器
+    editorContainer.innerHTML = '';
+    console.log('编辑器容器已清空');
+    
+    // 重置编辑器实例
+    editorInstance = null;
+    console.log('编辑器实例已重置为null');
+    
+    return true;
+}
+
+// 显示欢迎页
+function showWelcomePage() {
+    console.log('显示欢迎页');
+    
+    // 设置当前文章ID为null
+    currentArticleId = null;
+    
+    // 销毁编辑器
+    if (editorInstance) {
+        destroyEditor();
+    }
+    
+    // 隐藏工具栏
+    const toolbarElement = document.querySelector('.toolbar');
+    if (!toolbarElement) {
+        console.error('找不到工具栏元素');
+    } else {
+        toolbarElement.style.display = 'none';
+    }
+    
+    // 隐藏文章标题
+    const titleElement = document.getElementById('article-title');
+    if (titleElement) {
+        titleElement.style.display = 'none';
+        titleElement.textContent = '';
+    }
+    
+    // 隐藏编辑器容器
+    const editorWrapper = document.getElementById('editor-wrapper');
+    if (!editorWrapper) {
+        console.error('找不到编辑器容器元素');
+    } else {
+        editorWrapper.style.display = 'none';
+    }
+    
+    // 显示欢迎页
+    const welcomeContainer = document.getElementById('welcome-container');
+    if (!welcomeContainer) {
+        console.error('找不到欢迎页容器元素');
+    } else {
+        welcomeContainer.style.display = 'flex';
+    }
+    
+    console.log('欢迎页显示完成');
+}
+
+// 显示通知消息
+function showToast(type, message) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    
+    // 限制通知频率
+    const now = Date.now();
+    if (now - lastToastTime < 10000) { // 10秒内
+        toastCount++;
+        if (toastCount > MAX_TOASTS) {
+            console.log('通知过多，忽略:', message);
+        return;
+        }
+    } else {
+        // 重置计数
+        lastToastTime = now;
+        toastCount = 1;
+    }
+    
+    // 清除所有现有通知
+    container.innerHTML = '';
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast show';
+    
+    let bgClass = '';
+    let icon = '';
+    switch (type) {
+        case 'success':
+            bgClass = 'bg-success text-white';
+            icon = 'fa-check-circle';
+            break;
+        case 'error':
+            bgClass = 'bg-danger text-white';
+            icon = 'fa-exclamation-circle';
+            break;
+        case 'warning':
+            bgClass = 'bg-warning';
+            icon = 'fa-exclamation-triangle';
+            break;
+        case 'info':
+        default:
+            bgClass = 'bg-info text-white';
+            icon = 'fa-info-circle';
+    }
+    
+    toast.classList.add(bgClass);
+    
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas ${icon} me-2"></i>${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white m-auto me-2" onclick="this.parentNode.parentNode.remove()"></button>
+            </div>
+        `;
+        
+    container.appendChild(toast);
+    
+    // 自动关闭
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.remove();
+        }
+    }, 3000);
+}
+
+// 页面加载完成后执行
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('页面加载完成，开始初始化...');
+    
+    // 清除所有旧通知
+    clearOldToasts();
+    
+    // 绑定按钮事件
+    const editBtn = document.getElementById('edit-btn');
+    const saveBtn = document.getElementById('save-btn');
+    
+    if (editBtn) {
+        console.log('绑定编辑按钮事件');
+        editBtn.addEventListener('click', function() {
+            console.log('编辑按钮被点击');
+            editArticle();
+        });
+    }
+    
+    if (saveBtn) {
+        console.log('绑定保存按钮事件');
+        saveBtn.addEventListener('click', function() {
+            console.log('保存按钮被点击');
+            saveArticle();
+        });
+    }
+    
+    // 加载模块列表
+    loadModules().then(() => {
+        // 加载完成后修复加载中的模块
+        setTimeout(fixLoadingModules, 1000);
+    });
+    
+    // 添加刷新按钮
+    setTimeout(addRefreshButton, 500);
+});
+
+// 创建模块
+window.createModule = function() {
+    const form = document.getElementById('createModuleForm');
+    if (!form) {
+        showToast('error', '表单不存在');
+        return;
+    }
+    
+    const formData = new FormData(form);
+    const name = formData.get('name');
+    const parentId = formData.get('parent_id');
+    
+    if (!name) {
+        showToast('error', '请输入模块名称');
+        return;
+    }
+    
+    // 显示加载中
+    showToast('info', '正在创建模块...');
+    
+    // 发送请求
+    fetch('/api/knowledge/create-module', {
+        method: 'POST',
+                headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            name: name,
+            parent_id: parentId || null
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`服务器响应错误: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            showToast('success', '模块创建成功');
+            
+            // 关闭模态框
+            safeCloseModal('createModuleModal');
+            
+            // 重新加载模块列表
+            loadModules();
+    } else {
+            throw new Error(data.error || '创建模块失败');
+        }
+    })
+    .catch(error => {
+        console.error('创建模块失败:', error);
+        showToast('error', '创建模块失败: ' + error.message);
+    });
+}
+
+// 创建文章
+window.createArticle = function() {
+    const form = document.getElementById('createArticleForm');
+    if (!form) {
+        showToast('error', '表单不存在');
+        return;
+    }
+    
+    const formData = new FormData(form);
+    const title = formData.get('title');
+    const moduleId = formData.get('module_id');
+    
+    if (!title) {
+        showToast('error', '请输入文章标题');
+        return;
+    }
+    
+    if (!moduleId) {
+        showToast('error', '请选择模块');
+        return;
+    }
+    
+    // 显示加载中
+    showToast('info', '正在创建文章...');
+    
+    // 发送请求
+    fetch('/api/knowledge/article', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            title: title,
+            module_id: moduleId,
+            content: '<p>请在此处输入文章内容...</p>'
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`服务器响应错误: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            showToast('success', '文章创建成功');
+            
+            // 关闭模态框
+            safeCloseModal('createArticleModal');
+            
+            // 重新加载模块并打开新文章
+            loadModules().then(() => {
+                if (data.article_id) {
+                    openArticle(data.article_id, true);
+                }
+            });
+        } else {
+            throw new Error(data.error || '创建文章失败');
+        }
+    })
+    .catch(error => {
+        console.error('创建文章失败:', error);
+        showToast('error', '创建文章失败: ' + error.message);
+    });
+}
+
+// 重新加载特定模块的数据并打开文章
+function reloadModuleData(moduleId, articleId) {
+    console.log('重新加载模块数据:', moduleId, articleId);
+    
+    // 先更新UI显示加载状态
+    const module = findModuleById(moduleId);
+    if (module) {
+        module.articles = [{
+            id: 'loading',
+            title: '正在加载文章列表...',
+            isLoading: true
+        }];
+            renderModuleTree();
+    }
+    
+    // 加载模块数据
+    fetch(`/api/knowledge/module/${moduleId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`加载模块数据失败: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data && data.success && data.module) {
+                // 更新模块数据
+                updateModuleInTree(data.module);
+                
+                // 确保模块被展开
+                expandedModules.add(moduleId);
+                
+                // 重新渲染模块树
+                renderModuleTree();
+                
+                // 如果有新文章ID,打开它
+                if (articleId) {
+                    setTimeout(() => {
+                        openArticle(articleId, true);
+                    }, 300);
+                }
+            } else {
+                throw new Error('获取模块数据失败');
+            }
+        })
+        .catch(error => {
+            console.error('重新加载模块数据失败:', error);
+            showToast('error', '加载模块数据失败: ' + error.message);
+            
+            // 显示错误状态
+            if (module) {
+                module.articles = [{
+                    id: 'error',
+                    title: '加载失败,请点击刷新重试',
+                    isError: true
+                }];
+                renderModuleTree();
+            }
+        });
+}
+
+// 更新模块树中的特定模块
+function updateModuleInTree(moduleData) {
+    // 递归查找并更新模块
+    function updateModule(modules, targetModule) {
+        if (!Array.isArray(modules)) return false;
+        
+        for (let i = 0; i < modules.length; i++) {
+            if (modules[i].id === targetModule.id) {
+                // 更新找到的模块
+                modules[i] = targetModule;
+                return true;
+            }
+            
+            // 递归查找子模块
+            if (modules[i].children && modules[i].children.length > 0) {
+                if (updateModule(modules[i].children, targetModule)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    // 在模块树中更新模块
+    if (!updateModule(window.moduleData, moduleData)) {
+        // 如果未找到，检查window.moduleData是否为数组
+        if (!Array.isArray(window.moduleData)) {
+            window.moduleData = [];
+        }
+        // 添加到列表
+        window.moduleData.push(moduleData);
+    }
+    
+    // 重新渲染模块树
+    renderModuleTree();
+}
+
+// 保存单篇文章到本地存储
+function saveArticleToLocalStorage(article, content) {
+    try {
+        // 如果传入的是完整的文章对象
+        if (typeof article === 'object') {
+            const articleId = article.id;
+            
+            // 保存文章元数据到列表中
+            let articleMetaList = localStorage.getItem('KNOWLEDGE_ARTICLE_META');
+            let articles = articleMetaList ? JSON.parse(articleMetaList) : [];
+            
+            // 检查文章是否已存在
+            const existingIndex = articles.findIndex(a => a.id === articleId);
+            if (existingIndex >= 0) {
+                // 更新现有文章
+                articles[existingIndex] = {...articles[existingIndex], ...article};
+            } else {
+                // 添加新文章
+                articles.push(article);
+            }
+            
+            // 保存文章元数据列表
+            localStorage.setItem('KNOWLEDGE_ARTICLE_META', JSON.stringify(articles));
+            
+            // 如果提供了content，保存文章内容
+            if (content) {
+                // 保存文章内容
+                let articlesContent = {};
+                const savedArticlesContent = localStorage.getItem(ARTICLES_KEY);
+                if (savedArticlesContent) {
+                    articlesContent = JSON.parse(savedArticlesContent);
+                }
+                
+                articlesContent[articleId] = content;
+                localStorage.setItem(ARTICLES_KEY, JSON.stringify(articlesContent));
+            }
+            
+            console.log('已保存文章到本地存储:', articleId);
+            return true;
+        } 
+        // 如果只传入了ID和内容（旧方式兼容）
+        else {
+            const articleId = article; // 第一个参数是文章ID
+            
+            // 保存文章内容
+            let articlesContent = {};
+            const savedArticlesContent = localStorage.getItem(ARTICLES_KEY);
+            if (savedArticlesContent) {
+                articlesContent = JSON.parse(savedArticlesContent);
+            }
+            
+            articlesContent[articleId] = content;
+            localStorage.setItem(ARTICLES_KEY, JSON.stringify(articlesContent));
+            
+            console.log('已保存文章内容到本地存储:', articleId);
+            return true;
+        }
+    } catch (e) {
+        console.error('保存文章到本地存储时出错:', e);
+        return false;
+    }
+}
+
+// 从本地存储加载文章
+function loadArticleFromLocalStorage(articleId) {
+    try {
+        const savedArticles = localStorage.getItem(ARTICLES_KEY);
+        if (savedArticles) {
+            const articles = JSON.parse(savedArticles);
+            if (articles[articleId]) {
+                console.log('从本地存储加载了文章:', articleId);
+                return articles[articleId];
+            }
+        }
+        return null;
+    } catch (e) {
+        console.error('从本地存储加载文章时出错:', e);
+        return null;
+    }
+}
+
+// 新增辅助函数，用于根据模块ID查找模块对象
+function findModuleById(moduleId, modules = null) {
+    // 如果未提供modules，则使用全局moduleData
+    modules = modules || moduleData;
+    
+    if (!modules || !Array.isArray(modules)) {
+        return null;
+    }
+    
+    for (let i = 0; i < modules.length; i++) {
+        if (modules[i].id === moduleId) {
+            return modules[i];
+        }
+        
+        // 递归查找子模块
+        if (modules[i].children && modules[i].children.length > 0) {
+            const found = findModuleById(moduleId, modules[i].children);
+            if (found) {
+                return found;
+            }
+        }
+    }
+    
+    return null;
+}
+
+// 根据模块ID更新文章列表
+function updateModuleArticles(moduleId, articles) {
+    const mod = findModuleById(moduleId);
+    if (mod) {
+        mod.articles = articles;
+        console.log(`更新模块 ${moduleId} 的文章列表，共 ${articles.length} 篇`);
+    }
+}
+
+// 修改fetchArticlesForModule函数，不再创建模拟文章
+function fetchArticlesForModule(moduleId) {
+    const moduleElement = document.querySelector(`[data-module-id="${moduleId}"]`);
+    if (!moduleElement) return;
+    
+    // 显示加载状态
+    const articlesList = moduleElement.querySelector('.articles-list');
+    if (articlesList) {
+        articlesList.innerHTML = '<div class="article-list-item loading"><i class="fas fa-spinner fa-spin me-2"></i>加载文章列表...</div>';
+    }
+    
+    // 发起请求
+    fetch(`/api/knowledge/articles?module_id=${moduleId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.code === 0 && data.data) {
+                // 更新模块的文章数据
+                const module = moduleData.find(m => m.id === moduleId);
+                if (module) {
+                    module.articles = data.data;
+                    // 重新渲染整个模块树
+        renderModuleTree();
+                }
+        } else {
+                throw new Error(data.message || '加载文章失败');
+            }
+        })
+        .catch(error => {
+            console.error('加载文章失败:', error);
+            if (articlesList) {
+                articlesList.innerHTML = '<div class="article-list-item error"><i class="fas fa-exclamation-triangle me-2"></i>加载文章失败，请稍后重试</div>';
+            }
+        });
+}
+
+// 添加一个刷新模块文章列表的函数
+function refreshModuleArticles(moduleId) {
+    console.log(`刷新模块 ${moduleId} 的文章列表`);
+    
+    // 确保模块被展开
+    expandedModules.add(moduleId);
+    
+    // 重新获取文章列表
+    fetchArticlesForModule(moduleId);
+}
+
+// 修改toggleModule函数，添加刷新按钮
+function toggleModule(moduleId) {
+    console.log(`切换模块 ${moduleId} 展开状态`);
+    
+    if (expandedModules.has(moduleId)) {
+        console.log(`折叠模块 ${moduleId}`);
+        expandedModules.delete(moduleId);
+    } else {
+        console.log(`展开模块 ${moduleId}`);
+        expandedModules.add(moduleId);
+        
+        // 查找模块
+        const mod = findModuleById(moduleId);
+        console.log('模块信息:', mod);
+        
+        // 如果模块存在且有文章数量但无文章列表
+        if (mod && mod.count > 0 && (!mod.articles || mod.articles.length === 0)) {
+            fetchArticlesForModule(moduleId);
+        }
+    }
+    
+    renderModuleTree();
+}
+
+// 删除文章
+function deleteArticle(articleId, articleTitle) {
+    if (!articleId) return;
+    
+    // 确认是否删除
+    if (!confirm(`确定要删除文章"${articleTitle || articleId}"吗？此操作不可恢复！`)) {
+        return;
+    }
+    
+    console.log('开始删除文章:', articleId);
+    showToast('info', '正在删除文章...');
+    
+    // 使用统一的API路径
+    fetch(`/api/knowledge/article/${articleId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                try {
+                    const data = JSON.parse(text);
+                    throw new Error(data.error || `删除失败: ${response.status}`);
+                } catch (e) {
+                    throw new Error(`删除失败: ${text}`);
+                }
+            });
+        }
+        return response.json().catch(() => ({ success: true }));
+    })
+    .then(data => {
+        if (data.success) {
+            showToast('success', '文章删除成功');
+        
+        // 从UI上移除文章
+        completeArticleDeletion(articleId);
+        
+            // 重新加载模块列表
+            loadModules();
+        } else {
+            throw new Error(data.error || '删除失败');
+        }
+    })
+    .catch(error => {
+        console.error('删除文章失败:', error);
+        showToast('error', '删除文章失败: ' + error.message);
+        
+        // 重新加载模块列表
+        loadModules();
+    });
+}
+
+// 完成文章删除后的清理工作
+function completeArticleDeletion(articleId) {
+    // 如果当前正在查看该文章，则返回欢迎页
+    if (currentArticleId === articleId) {
+        showWelcomePage();
+    }
+    
+    // 从所有模块中移除该文章
+    moduleData.forEach(module => {
+        removeArticleFromModule(module, articleId);
+    });
+    
+    // 重新渲染模块树
+    renderModuleTree();
+}
+
+// 从模块中递归移除文章
+function removeArticleFromModule(module, articleId) {
+    if (module.articles && module.articles.length > 0) {
+        // 移除文章
+        module.articles = module.articles.filter(article => article.id !== articleId);
+        
+        // 如果移除后文章数为0，更新count
+        if (module.articles.length === 0) {
+            module.count = 0;
+        }
+    }
+    
+    // 递归处理子模块
+    if (module.children && module.children.length > 0) {
+        module.children.forEach(child => {
+            removeArticleFromModule(child, articleId);
+        });
+    }
+}
+
+// 从本地存储中删除文章
+function deleteArticleFromLocalStorage(articleId) {
+    try {
+        // 删除文章内容
+        let articlesContent = {};
+        const savedArticlesContent = localStorage.getItem(ARTICLES_KEY);
+        if (savedArticlesContent) {
+            articlesContent = JSON.parse(savedArticlesContent);
+            delete articlesContent[articleId];
+            localStorage.setItem(ARTICLES_KEY, JSON.stringify(articlesContent));
+        }
+        
+        // 删除文章元数据
+        let articleMetaList = localStorage.getItem('KNOWLEDGE_ARTICLE_META');
+        if (articleMetaList) {
+            let articles = JSON.parse(articleMetaList);
+            articles = articles.filter(a => a.id !== articleId);
+            localStorage.setItem('KNOWLEDGE_ARTICLE_META', JSON.stringify(articles));
+        }
+        
+        console.log('从本地存储删除了文章:', articleId);
+        return true;
+    } catch (e) {
+        console.error('从本地存储删除文章时出错:', e);
+        return false;
+    }
+}
+
+// 删除模块
+function deleteModule(moduleId, moduleName) {
+    if (!moduleId) return;
+
+    if (!confirm(`确定要删除模块"${moduleName || moduleId}"吗？此操作不可恢复！`)) {
+        return;
+    }
+
+    showToast('info', '正在删除模块...');
+
+    // 使用统一的API路径
+    fetch(`/api/knowledge/module/${moduleId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                try {
+                    const data = JSON.parse(text);
+                    throw new Error(data.error || `删除失败: ${response.status}`);
+                } catch (e) {
+                    throw new Error(`删除失败: ${text}`);
+                }
+            });
+        }
+        return response.json().catch(() => ({ success: true }));
+    })
+    .then(data => {
+        if (data.success) {
+            showToast('success', '模块删除成功');
+            
+            // 从模块树中移除该模块
+            removeModuleFromTree(moduleId);
+            
+            // 重新渲染模块树
+            renderModuleTree();
+            
+            // 如果当前正在查看该模块的文章，返回欢迎页
+            if (currentArticleId && findArticleInModule({ id: moduleId }, currentArticleId)) {
+                showWelcomePage();
+            }
+        } else {
+            throw new Error(data.error || '删除失败');
+        }
+    })
+    .catch(error => {
+        console.error('删除模块失败:', error);
+        showToast('error', '删除模块失败: ' + error.message);
+    });
+}
+
+// 从模块树中移除模块
+function removeModuleFromTree(moduleId) {
+    moduleData = moduleData.filter(module => {
+        if (module.id === moduleId) {
+            return false;
+        }
+        if (module.children) {
+            module.children = module.children.filter(child => child.id !== moduleId);
+        }
+            return true;
+        });
+}
+
+// 递归尝试不同的模块删除方法
+function tryModuleDeletion(options, index, moduleId) {
+    if (index >= options.length) {
+        console.error('所有删除尝试都失败');
+        showToast('error', '删除模块失败: 所有尝试均已失败');
+        
+        // 最后一个选项：添加开发人员控制台指令
+        console.log('开发人员可以通过以下指令手动修改模块数据:');
+        console.log('moduleData = moduleData.filter(m => m.id !== "' + moduleId + '");');
+        console.log('renderModuleTree();');
+        console.log('然后请联系后端开发人员修复服务器端API');
+        
+        // 添加模块ID到临时忽略列表
+        if (!window.ignoredModules) window.ignoredModules = [];
+        window.ignoredModules.push(moduleId);
+        
+        // 仅在UI上暂时移除，刷新页面后会重新出现
+        removeModuleFromTree(moduleId);
+        renderModuleTree();
+        
+        showToast('warning', '模块在界面上暂时隐藏，刷新页面后会重新出现');
+        return;
+    }
+    
+    const currentOption = options[index];
+    console.log(`尝试删除方式 ${index + 1}/${options.length}:`, currentOption);
+    
+    fetch(currentOption.url, {
+        method: currentOption.method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(currentOption.body)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                console.error(`尝试 ${index + 1} 失败:`, text);
+                // 继续尝试下一个选项
+                throw new Error('请求失败');
+            });
+        }
+        
+        return response.text().then(text => {
+            // 如果返回的是JSON格式，解析它
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                // 不是JSON，可能只是一个成功的响应
+                return { success: true, text: text };
+            }
+        });
+    })
+    .then(data => {
+        console.log(`尝试 ${index + 1} 成功:`, data);
+        showToast('success', '模块删除成功');
+        
+        // 从模块数据中移除该模块
+        removeModuleFromTree(moduleId);
+        
+        // 重新渲染模块树
+        renderModuleTree();
+        
+        // 刷新页面以获取最新数据
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+    })
+    .catch(error => {
+        console.error(`尝试 ${index + 1} 错误:`, error);
+        
+        // 失败后尝试下一个选项
+        tryModuleDeletion(options, index + 1, moduleId);
+    });
+}
+
+// 手动操作模块数据的工具函数
+window.deleteModuleManually = function(moduleId) {
+    if (!moduleId) return false;
+    
+    console.log('手动删除模块:', moduleId);
+    
+    // 在客户端移除模块
+    moduleData = moduleData.filter(module => module.id !== moduleId);
+    renderModuleTree();
+    
+    showToast('warning', '已在界面上移除模块，但服务器数据未更新');
+    return true;
+};
+
+// 重写的颜色选择器功能
+function initColorButtons(editorContent) {
+    // 背景颜色配置
+    const bgColors = [
+        {color: '#ffffff', title: '白色'},
+        {color: '#f8f9fa', title: '淡灰'},
+        {color: '#e9ecef', title: '浅灰'},
+        {color: '#e7f5ff', title: '淡蓝'},
+        {color: '#ebfbee', title: '淡绿'},
+        {color: '#fff5f5', title: '淡红'},
+        {color: '#fff9db', title: '米色'}
+    ];
+    
+    // 文本颜色配置
+    const textColors = [
+        {color: '#212529', title: '黑色'},
+        {color: '#495057', title: '深灰'},
+        {color: '#1971c2', title: '蓝色'},
+        {color: '#2b8a3e', title: '绿色'},
+        {color: '#c92a2a', title: '红色'},
+        {color: '#e67700', title: '橙色'},
+        {color: '#5f3dc4', title: '紫色'}
+    ];
+    
+    // 创建颜色工具栏
+    const colorToolbar = document.createElement('div');
+    colorToolbar.className = 'color-toolbar';
+    
+    // 创建背景颜色部分
+    const bgSection = createColorSection('背景颜色:', bgColors, (color) => {
+        applyBackgroundColor(editorContent, color);
+    });
+    
+    // 创建文本颜色部分
+    const textSection = createColorSection('文本颜色:', textColors, (color) => {
+        applyTextColor(editorContent, color);
+    });
+    
+    // 添加到工具栏
+    colorToolbar.appendChild(bgSection);
+    colorToolbar.appendChild(textSection);
+    
+    return colorToolbar;
+}
+
+// 创建颜色部分
+function createColorSection(label, colors, clickHandler) {
+    const section = document.createElement('div');
+    section.className = 'color-section';
+    
+    const labelElem = document.createElement('span');
+    labelElem.className = 'color-label';
+    labelElem.textContent = label;
+    section.appendChild(labelElem);
+    
+    colors.forEach(color => {
+        const btn = document.createElement('div');
+        btn.className = 'color-btn';
+        btn.title = color.title;
+        btn.style.backgroundColor = color.color;
+        btn.addEventListener('click', () => clickHandler(color.color));
+        section.appendChild(btn);
+    });
+    
+    return section;
+}
+
+// 应用背景颜色
+function applyBackgroundColor(editorContent, color) {
+    console.log('应用背景颜色:', color);
+    
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) {
+        showToast('warning', '请先选择要设置颜色的文本');
+        return;
+    }
+    
+    const range = selection.getRangeAt(0);
+    
+    // 如果没有选中任何文本，显示提示
+    if (range.collapsed) {
+        showToast('info', '请先选择要设置颜色的文本');
+        return;
+    }
+    
+    // 创建新的span元素
+    const span = document.createElement('span');
+    span.style.backgroundColor = color;
+    
+    try {
+        // 将选中的文本包含在span内
+        range.surroundContents(span);
+        showToast('success', '背景颜色已应用');
+    } catch (e) {
+        console.error('应用背景颜色失败:', e);
+        
+        // 如果surroundContents失败，尝试使用document.execCommand
+        try {
+            document.execCommand('backColor', false, color);
+            showToast('success', '背景颜色已应用');
+        } catch (e2) {
+            console.error('备用方法也失败:', e2);
+            showToast('error', '应用背景颜色失败');
+        }
+    }
+    
+    // 保持焦点在编辑器
+    editorContent.focus();
+}
+
+// 应用文本颜色
+function applyTextColor(editorContent, color) {
+    console.log('应用文本颜色:', color);
+    
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) {
+        showToast('warning', '请先选择要设置颜色的文本');
+        return;
+    }
+    
+    const range = selection.getRangeAt(0);
+    
+    // 如果没有选中任何文本，显示提示
+    if (range.collapsed) {
+        showToast('info', '请先选择要设置颜色的文本');
+        return;
+    }
+    
+    // 创建新的span元素
+    const span = document.createElement('span');
+    span.style.color = color;
+    
+    try {
+        // 将选中的文本包含在span内
+        range.surroundContents(span);
+        showToast('success', '文本颜色已应用');
+    } catch (e) {
+        console.error('应用文本颜色失败:', e);
+        
+        // 如果surroundContents失败，尝试使用document.execCommand
+        try {
+            document.execCommand('foreColor', false, color);
+            showToast('success', '文本颜色已应用');
+        } catch (e2) {
+            console.error('备用方法也失败:', e2);
+            showToast('error', '应用文本颜色失败');
+        }
+    }
+    
+    // 保持焦点在编辑器
+    editorContent.focus();
+}
+
+// 添加刷新模块列表按钮
+function addRefreshButton() {
+    const sidebarHeader = document.querySelector('.sidebar .d-flex.justify-content-between');
+    
+    if (!sidebarHeader) return;
+    
+    // 创建刷新按钮
+    const refreshBtn = document.createElement('button');
+    refreshBtn.className = 'btn btn-sm btn-outline-info ms-1';
+    refreshBtn.title = '刷新模块列表';
+    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
+    refreshBtn.onclick = function() {
+        loadModules();
+    };
+    
+    // 添加到按钮组
+    const btnGroup = sidebarHeader.querySelector('.btn-group');
+    if (btnGroup) {
+        btnGroup.appendChild(refreshBtn);
+    }
+}
+
+// 解除文章loading状态 - 添加处理加载中模块的函数
+function fixLoadingModules() {
+    let hasLoadingModules = false;
+    
+    // 检查并修复加载中的模块
+    function checkAndFixModule(module) {
+        // 如果模块有文章，但第一篇是loading状态
+        if (module.articles && module.articles.length > 0 && 
+            module.articles[0].id === 'loading') {
+            console.log(`修复模块 ${module.id} 的加载状态`);
+            hasLoadingModules = true;
+            
+            // 替换为空文章提示
+            module.articles = [{
+                id: 'empty',
+                title: '该模块暂无文章，请点击下方按钮创建新文章',
+                isError: true
+            }];
+        }
+        
+        // 递归检查子模块
+        if (module.children && module.children.length > 0) {
+            module.children.forEach(checkAndFixModule);
+        }
+    }
+    
+    // 检查所有模块
+    moduleData.forEach(checkAndFixModule);
+    
+    // 如果有修复，重新渲染
+    if (hasLoadingModules) {
+        console.log('修复了加载中的模块');
+        renderModuleTree();
+    }
+}
+
+// 安全关闭模态框的通用函数
+function safeCloseModal(modalId) {
+    const modalElement = document.getElementById(modalId);
+    if (!modalElement) return;
+    
+    // 移除aria-hidden属性
+    modalElement.removeAttribute('aria-hidden');
+    
+    // 获取模态框实例并关闭
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    if (modal) {
+        modal.hide();
+        
+        // 等待模态框完全关闭后再执行清理
+        modalElement.addEventListener('hidden.bs.modal', function onHidden() {
+            // 移除事件监听器
+            modalElement.removeEventListener('hidden.bs.modal', onHidden);
+            
+            // 清理DOM状态
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('padding-right');
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+            
+            // 重置表单
+            const form = modalElement.querySelector('form');
+            if (form) {
+                form.reset();
+            }
+            
+            // 将焦点转移到body
+            document.body.focus();
+        });
+    }
+}
+
+// 在模态框关闭时重置表单
+document.addEventListener('DOMContentLoaded', function() {
+    ['createModuleModal', 'createArticleModal'].forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.addEventListener('hidden.bs.modal', function() {
+                const form = this.querySelector('form');
+                if (form) {
+                    form.reset();
+                }
+            });
+        }
+    });
+});
+
+// 修改渲染模块树的相关代码
+function renderModule(module, level = 0) {
+    const moduleDiv = document.createElement('div');
+    moduleDiv.className = 'module-node';
+    
+    // 创建模块头部
+    const header = document.createElement('div');
+    header.className = 'module-header';
+    if (currentArticleId === module.id) {
+        header.classList.add('active');
+    }
+    
+    // 添加层级缩进
+    header.style.marginLeft = `${level * 20}px`;
+    
+    header.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas ${expandedModules.has(module.id) ? 'fa-folder-open' : 'fa-folder'} me-2"></i>
+            <span class="module-name">${module.name}</span>
+            ${module.count ? `<span class="ms-auto badge bg-primary rounded-pill">${module.count}</span>` : ''}
+        </div>
+    `;
+    
+    // 点击事件处理
+    header.onclick = () => toggleModule(module.id);
+    moduleDiv.appendChild(header);
+    
+    if (expandedModules.has(module.id)) {
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'module-content';
+        contentDiv.style.marginLeft = `${level * 20}px`;
+        
+        // 显示文章列表或空状态
+        if (module.articles && module.articles.length > 0) {
+            const articlesList = document.createElement('div');
+            articlesList.className = 'articles-list';
+            
+            module.articles.forEach(article => {
+                const articleItem = document.createElement('div');
+                articleItem.className = 'article-list-item';
+                if (currentArticleId === article.id) {
+                    articleItem.classList.add('active');
+                }
+                
+                articleItem.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-file-alt me-2"></i>
+                        <span class="article-title">${article.title}</span>
+                    </div>
+                `;
+                
+                articleItem.onclick = () => openArticle(article.id);
+                articlesList.appendChild(articleItem);
+            });
+            
+            contentDiv.appendChild(articlesList);
+        } else {
+            // 显示空状态
+            contentDiv.appendChild(createEmptyState(module.id));
+        }
+        
+        moduleDiv.appendChild(contentDiv);
+    }
+    
+    return moduleDiv;
+}
+
+// 创建空状态显示
+function createEmptyState(moduleId) {
+    const emptyState = document.createElement('div');
+    emptyState.className = 'empty-state';
+    emptyState.innerHTML = `
+        <div class="text-center py-3">
+            <i class="fas fa-folder-open text-muted mb-2" style="font-size: 2rem;"></i>
+            <p class="text-muted">此模块暂无文章</p>
+            <button class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-plus"></i>
+                创建新文章
+            </button>
+        </div>
+    `;
+    
+    // 添加创建文章的点击事件
+    const addButton = emptyState.querySelector('button');
+    if (addButton) {
+        addButton.onclick = (e) => {
+            e.stopPropagation();
+            showCreateArticleModal(moduleId);
+        };
+    }
+    
+    return emptyState;
+}
+
+// 安全关闭模态框的函数
+function safeCloseModal(modalId) {
+    const modalElement = document.getElementById(modalId);
+    if (!modalElement) return;
+    
+    // 移除aria-hidden属性
+    modalElement.removeAttribute('aria-hidden');
+    
+    // 获取模态框实例并关闭
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    if (modal) {
+        modal.hide();
+        
+        // 等待模态框完全关闭后再执行清理
+        modalElement.addEventListener('hidden.bs.modal', function onHidden() {
+            // 移除事件监听器
+            modalElement.removeEventListener('hidden.bs.modal', onHidden);
+            
+            // 清理DOM状态
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('padding-right');
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+            
+            // 重置表单
+            const form = modalElement.querySelector('form');
+            if (form) {
+                form.reset();
+            }
+            
+            // 将焦点转移到body
+            document.body.focus();
+        });
+    }
+}
+
+// 修改文章加载函数
+function fetchArticlesForModule(moduleId) {
+    const moduleElement = document.querySelector(`[data-module-id="${moduleId}"]`);
+    if (!moduleElement) return;
+    
+    // 显示加载状态
+    const articlesList = moduleElement.querySelector('.articles-list');
+    if (articlesList) {
+        articlesList.innerHTML = '<div class="article-list-item loading"><i class="fas fa-spinner fa-spin me-2"></i>加载文章列表...</div>';
+    }
+    
+    // 发起请求
+    fetch(`/api/knowledge/articles?module_id=${moduleId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.code === 0 && data.data) {
+                // 更新模块的文章数据
+                const module = moduleData.find(m => m.id === moduleId);
+                if (module) {
+                    module.articles = data.data;
+                    // 重新渲染整个模块树
+                    renderModuleTree();
+                }
+            } else {
+                throw new Error(data.message || '加载文章失败');
+            }
+        })
+        .catch(error => {
+            console.error('加载文章失败:', error);
+            if (articlesList) {
+                articlesList.innerHTML = '<div class="article-list-item error"><i class="fas fa-exclamation-triangle me-2"></i>加载文章失败，请稍后重试</div>';
+            }
+        });
+}
+
+// 显示创建模块模态框
+function showCreateModuleModal() {
+    // 确保模块选择器已更新
+    updateModuleSelects();
+    
+    // 显示模态框
+    const modal = new bootstrap.Modal(document.getElementById('createModuleModal'));
+    modal.show();
+}
+
+// 显示创建文章模态框
+function showCreateArticleModal(moduleId) {
+    // 如果提供了moduleId，预先选择该模块
+    if (moduleId) {
+        const moduleSelect = document.querySelector('select[name="module_id"]');
+        if (moduleSelect) {
+            moduleSelect.value = moduleId;
+        }
+    }
+    
+    // 显示模态框
+    const modal = new bootstrap.Modal(document.getElementById('createArticleModal'));
+    modal.show();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM加载完成，初始化知识库...');
+    
+    // 添加键盘快捷键 - Ctrl+S 保存文章
+    document.addEventListener('keydown', function(event) {
+        // 检查是否是Ctrl+S或Command+S (Mac)
+        if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+            // 阻止默认行为（浏览器保存页面）
+            event.preventDefault();
+            
+            // 检查是否在编辑模式并且有当前文章
+            if (currentArticleId && editorInstance) {
+                console.log('检测到快捷键Ctrl+S，尝试保存文章');
+                saveArticle();
+            } else {
+                console.log('检测到快捷键Ctrl+S，但当前不在编辑模式或没有选择文章');
+            }
+        }
+    });
+    
+    // 调试助手函数 - 可以在控制台使用
+    window.debugKnowledgeBase = {
+        checkEditor: function() {
+            console.log('编辑器实例状态:', editorInstance);
+            
+            // 检查DOM元素
+            const editorElement = document.getElementById('simple-editor');
+            console.log('编辑器DOM元素:', editorElement);
+            
+            // 检查保存按钮
+            const saveBtn = document.getElementById('save-btn');
+            console.log('保存按钮状态:', saveBtn);
+            
+            return {
+                editorInstance: editorInstance,
+                editorElement: editorElement,
+                saveButton: saveBtn,
+                currentArticleId: currentArticleId
+            };
+        },
+        testSave: function() {
+            if (typeof saveArticle === 'function') {
+                console.log('正在测试保存功能...');
+                saveArticle();
+                return true;
+            } else {
+                console.error('保存函数未定义');
+                return false;
+            }
+        },
+        fixSaveButton: function() {
+            const saveBtn = document.getElementById('save-btn');
+            if (saveBtn) {
+                console.log('修复保存按钮点击事件...');
+                saveBtn.removeEventListener('click', saveArticle);
+                saveBtn.addEventListener('click', saveArticle);
+                return true;
+            }
+            return false;
+        }
+    };
+    
+    // 加载模块
+    loadModules();
+});
+</script>
+{% endblock %}
